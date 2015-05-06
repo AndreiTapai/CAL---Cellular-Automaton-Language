@@ -11,7 +11,7 @@ public class CAL_GUI {
 
     JFrame window;
     JPanel panel;
-    JPanel grid;
+    Grid grid;
 
     int windowWidth, windowHeight;
 
@@ -40,6 +40,13 @@ public class CAL_GUI {
 
     public static void main(String[] args) {
         CAL_GUI gui = new CAL_GUI();
+
+        for (Rectangle r : gui.grid.cells)
+        {
+            gui.grid.designatedCell = r;
+            System.out.println(gui.grid.designatedCell.x);
+            gui.grid.repaint();
+        }
     }
 
     @SuppressWarnings("serial")
@@ -48,6 +55,7 @@ public class CAL_GUI {
         private final int numXCells = 100;
         private final int numYCells = 100;
         private ArrayList<Rectangle> cells;
+        private Rectangle designatedCell;
 
         public Grid() {
             cells = new ArrayList<>(numXCells * numYCells);
@@ -84,10 +92,18 @@ public class CAL_GUI {
             for (Rectangle cell : cells) {
                 g2d.draw(cell);
             }
+            
+            if (designatedCell != null)
+            {
+                int index = designatedCell.x + (designatedCell.y * numYCells);
+                Rectangle cell = cells.get(index);
+                g2d.setColor(Color.BLACK);
+                g2d.fill(cell);
+            }
 
-            g2d.dispose();
+           g2d.dispose();
         }
-
+        
     }
 
 }
