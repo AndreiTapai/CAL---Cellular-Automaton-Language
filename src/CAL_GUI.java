@@ -3,107 +3,132 @@
  *
  * @authors Andrei Tapai, Fei-Tzin Lee
  */
+
 import java.awt.*;
-import java.util.ArrayList;
 import javax.swing.*;
 
 public class CAL_GUI {
+	JFrame window;						
+	JPanel panel;						
+	JPanel grid;						
 
-    JFrame window;
-    JPanel panel;
-    Grid grid;
+	int windowWidth, windowHeight;		
+	int boardSize; 				
 
-    int windowWidth, windowHeight;
+	static final int numYCells = 10;
+        static final int numXCells = 10;
+        
+        int cellWidth = 0;
+        int cellHeight = 0;
 
-    public CAL_GUI() {
-        window = new JFrame();
-        panel = new JPanel();
-        grid = new Grid();
+	static final int topPadding = 40;
+        
+        Rectangle designatedCell;
 
-        windowWidth = 750;
-        windowHeight = 750;
+	@SuppressWarnings("serial")
+	private class Grid extends JPanel {
 
-        panel.setLayout(new BorderLayout());
-        panel.add(grid, BorderLayout.CENTER);
+		private void renderCell(Graphics2D g2, int x, int y, int width, int height) {		
+			g2.setPaint(new Color(128, 128, 128));
+			g2.setStroke(new BasicStroke());
 
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setContentPane(panel);
-        window.setSize(windowWidth, windowHeight);
-        window.setLocation(500, 100);
-        window.setVisible(true);
-        window.setResizable(false);
-    }
+			g2.drawRect(x, y, width, height);
+                        
+                        if (designatedCell != null)
+                        {
+                            System.out.println(designatedCell.x +" "+ designatedCell.y +" "+ designatedCell.width +" "+ designatedCell.height);
+                            g2.setPaint(new Color(0,0,0));
+                            g2.fillRect(designatedCell.x, designatedCell.y, designatedCell.width, designatedCell.height);
+                        }
+		}
 
-    public void render() {
-        grid.repaint();
-    }
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
 
-    public static void main(String[] args) {
-        CAL_GUI gui = new CAL_GUI();
+			Graphics2D g2 = (Graphics2D) g;
 
-        for (Rectangle r : gui.grid.cells)
+			int x1, y1, x2, y2;			
+
+			x1 = (windowWidth - boardSize)/2;
+			y1 = topPadding;
+			x2 = x1 + boardSize;
+			y2 = y1 + boardSize;
+                        
+                        if (numYCells == numXCells)
+                        {                        
+                            cellWidth = boardSize / numYCells;
+                            cellHeight = boardSize / numXCells;
+                        }
+                        else
+                        {
+                            if (numYCells > numXCells)
+                            {
+                                cellWidth = boardSize / numXCells;
+                                cellHeight = boardSize / numYCells;
+                            }
+                            else
+                            {
+                                cellWidth = boardSize / numXCells;
+                                cellHeight = boardSize / numYCells;
+                            }
+                        }
+                        
+                        int xOffset = (x2 - (numYCells * cellHeight) + topPadding + 10) / 2;
+                        int yOffset = (y2 - (numXCells * cellWidth) + topPadding) / 2;
+
+
+			g2.setPaint(new Color(255, 255, 255));
+			g2.fillRect(x1, y1, x2-x1, y2-y1);
+			
+			for (int row = 0; row < numYCells; row++)
+				for (int col = 0; col < numXCells; col++)
+					renderCell(g2, xOffset + (col * cellWidth),
+                                                    yOffset + (row * cellHeight),
+                                                    cellWidth,
+                                                    cellHeight);
+		}
+	}
+
+
+	public CAL_GUI() {
+		window = new JFrame("Cellular Automaton Language GUI");
+		panel = new JPanel();
+		grid = new Grid();
+
+		windowWidth = 750;			
+		windowHeight = 770;			
+		boardSize = 650;			
+                designatedCell = null;
+
+		panel.setLayout(new BorderLayout());
+		panel.add(grid, BorderLayout.CENTER);
+
+                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setContentPane(panel);
+		window.setSize(windowWidth,windowHeight);
+		window.setLocation(500,100);
+		window.setVisible(true);
+		window.setResizable(false);
+	}
+        
+        public static void main(String[] args)
         {
-            gui.grid.designatedCell = r;
-            System.out.println(gui.grid.designatedCell.x);
-            gui.grid.repaint();
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private class Grid extends JPanel {
-
-        private final int numXCells = 100;
-        private final int numYCells = 100;
-        private ArrayList<Rectangle> cells;
-        private Rectangle designatedCell;
-
-        public Grid() {
-            cells = new ArrayList<>(numXCells * numYCells);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g.create();
-
-            int width = getWidth();
-            int height = getHeight();
-
-            int cellWidth = width / numXCells;
-            int cellHeight = height / numYCells;
-
-            int xOffset = (width - (numXCells * cellWidth)) / 2;
-            int yOffset = (height - (numYCells * cellHeight)) / 2;
-
-            if (cells.isEmpty()) {
-                for (int row = 0; row < numYCells; row++) {
-                    for (int col = 0; col < numXCells; col++) {
-                        Rectangle cell = new Rectangle(
-                                xOffset + (col * cellWidth),
-                                yOffset + (row * cellHeight),
-                                cellWidth,
-                                cellHeight);
-                        cells.add(cell);
-                    }
-                }
-            }
-
-            g2d.setColor(Color.GRAY);
-            for (Rectangle cell : cells) {
-                g2d.draw(cell);
-            }
-            
-            if (designatedCell != null)
-            {
-                int index = designatedCell.x + (designatedCell.y * numYCells);
-                Rectangle cell = cells.get(index);
-                g2d.setColor(Color.BLACK);
-                g2d.fill(cell);
-            }
-
-           g2d.dispose();
+            CAL_GUI gui = new CAL_GUI();
+            gui.render();
+            gui.fillRectangle();
         }
         
-    }
+        public void fillRectangle()
+        {
+            
+            System.out.println(0 + ", " + 1);
+            designatedCell = new Rectangle(0, 0, cellWidth, cellHeight);
+            render();
+                
+        }
+
+	public void render() {
+		grid.repaint();
+	}
 
 }
