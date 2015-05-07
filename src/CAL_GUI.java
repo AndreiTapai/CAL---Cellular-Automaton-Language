@@ -110,22 +110,6 @@ public class CAL_GUI {
 		window.setVisible(true);
 		window.setResizable(false);
 	}
-        
-        public static void main(String[] args)
-        {
-            CAL_GUI gui = new CAL_GUI();
-            gui.render();
-            gui.fillRectangle();
-        }
-        
-        public void fillRectangle()
-        {
-            
-            System.out.println(0 + ", " + 1);
-            designatedCell = new Rectangle(0, 0, cellWidth, cellHeight);
-            render();
-                
-        }
 
 	public void render() {
 		grid.repaint();
