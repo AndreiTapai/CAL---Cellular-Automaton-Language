@@ -123,26 +123,7 @@ public class CAL_GUI {
 		window.setResizable(false);
 	}
 
-	/**
-	 * Main method. Creates and calls gui object.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		CAL_GUI gui = new CAL_GUI();
-		gui.render();
-		gui.fillRectangle();
-	}
 
-	/**
-	 * 
-	 */
-	public void fillRectangle() {
-		System.out.println(0 + ", " + 1);
-		designatedCell = new Rectangle(0, 0, cellWidth, cellHeight);
-		render();
-	}
-	
 	/**
 	 * Repaints grid.
 	 */
