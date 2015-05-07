@@ -9,14 +9,40 @@ import java.lang.reflect.*;
 
 public class GUI extends Thread {
 	private CAL_GUI gui;
+	private Object obj;
+	private Class<?> c;
 	
 	/**
 	 * Public default constructor.
-	 * 
-	 * TODO: add parameters
 	 */
-	public GUI() {
-		gui = new CAL_GUI();
+	public GUI(Object object) {
+		//Field[] fields = getFields(classname);
+		//Method[] methods = getMethods(classname);
+		
+		obj = object;
+		c = obj.getClass();
+		
+		try {
+			Field fgx = c.getField("gridgx");
+			Field fgy = c.getField("gridgy");
+			
+			int gx = fgx.getInt(obj);
+			int gy = fgy.getInt(obj);
+			
+			gui = new CAL_GUI(gx, gy);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

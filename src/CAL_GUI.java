@@ -17,8 +17,8 @@ public class CAL_GUI {
 	int boardSize;
 
 	// initialize constants
-	static final int numYCells = 10;
-	static final int numXCells = 10;
+	final int numYCells;
+	final int numXCells;
 
 	int cellWidth = 0;
 	int cellHeight = 0;
@@ -100,9 +100,9 @@ public class CAL_GUI {
 	}
 
 	/**
-	 * Initializes GUI.
+	 * Constructor. Initializes GUI.
 	 */
-	public CAL_GUI() {
+	public CAL_GUI(int rows, int cols) {
 		window = new JFrame("Cellular Automaton Language GUI");
 		panel = new JPanel();
 		grid = new Grid();
@@ -121,6 +121,9 @@ public class CAL_GUI {
 		window.setLocation(500, 100);
 		window.setVisible(true);
 		window.setResizable(false);
+		
+		numYCells = rows;
+		numXCells = cols;
 	}
 
 

@@ -8,8 +8,8 @@ import java.util.Random;
  * @author Andrei
  */
 public class LifeCAL {
-    int gridgx = 10;
-    int gridgy = 10;
+    public int gridgx = 10;
+    public int gridgy = 10;
     
     ArrayList<Cell> cells = new ArrayList<Cell>();
     
