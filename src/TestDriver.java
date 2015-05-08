@@ -38,6 +38,7 @@ public class TestDriver {
                 }
 
                     GUI gui = new GUI(instance);
+                    gui.start();
                 }
             
 		
