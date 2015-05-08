@@ -186,11 +186,15 @@ public class Random {
 	 * @param range
 	 * @return
 	 */
-	public static String random(String[][] range) {
+	public static String random(String[] range) {
 		// no parameters
 		if(range == null || range.length == 0) {
-			
+			int length = (int) (Math.random() * 255) + 1;
+			return random(length);
 		}
+		
+		int i = (int) (Math.random() * range.length);
+		return range[i];
 	}
 	
 	/**
