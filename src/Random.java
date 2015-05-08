@@ -81,7 +81,7 @@ public class Random {
 	public static float random(float[] range) {
 		// no parameters
 		if(range == null || range.length == 0) {
-			
+			return randFloat();
 		}
 		
 		int i = (int) (Math.random() * range.length);
@@ -97,8 +97,31 @@ public class Random {
 	public static float random(float[][] range) {
 		// no parameters
 		if(range == null || range.length == 0) {
-			
+			return randFloat();
 		}
+		
+		// get continuous length
+		float length = 0;
+		
+		for(float[] r : range) {
+			if(r.length > 1) {
+				length += Math.abs(r[1] - r[0]);
+			}
+		}
+		
+		// pick random value
+		double ind = Math.random() * length;
+		
+		for(float[] r : range) {
+			if(r.length > 1 && ind < Math.abs(r[1] - r[0])) {
+				return (float) (r[0] + ind);
+			}
+			else {
+				ind -= Math.abs(r[1] = r[0]);
+			}
+		}
+		
+		return 0; //shouldn't be reachable
 	}
 	
 	/**
@@ -110,7 +133,7 @@ public class Random {
 	public static double random(double[] range) {
 		// no parameters
 		if(range == null || range.length == 0) {
-			
+			return randDouble();
 		}
 		
 		int i = (int) (Math.random() * range.length);
@@ -126,8 +149,31 @@ public class Random {
 	public static double random(double[][] range) {
 		// no parameters
 		if(range == null || range.length == 0) {
-			
+			return randDouble();
 		}
+		
+		// get continuous length
+		double length = 0;
+		
+		for(double[] r : range) {
+			if(r.length > 1) {
+				length += Math.abs(r[1] - r[0]);
+			}
+		}
+		
+		// pick random value
+		double ind = Math.random() * length;
+		
+		for(double[] r : range) {
+			if(r.length > 1 && ind < Math.abs(r[1] - r[0])) {
+				return r[0] + ind;
+			}
+			else {
+				ind -= Math.abs(r[1] = r[0]);
+			}
+		}
+		
+		return 0; //shouldn't be reachable
 	}
 	
 	/**
@@ -246,7 +292,27 @@ public class Random {
 	 */
 	public static char randChar() {
 		return (char) (int) (Math.random() *
-			(Character.MAX_VALUE - Character.MIN_VALUE + 1) +
-			Character.MIN_VALUE);
+			((long) (Character.MAX_VALUE) - (long) (Character.MIN_VALUE + 1)) +
+			(long) (Character.MIN_VALUE));
+	}
+	
+	/**
+	 * Helper function. Returns a random float.
+	 * 
+	 * @return A random float.
+	 */
+	public static float randFloat() {
+		return (float) (Math.random() * (Float.MAX_VALUE - Float.MIN_VALUE) +
+				Float.MIN_VALUE);
+	}
+	
+	/**
+	 * Helper function. Returns a random double.
+	 * 
+	 * @return A random double.
+	 */
+	public static double randDouble() {
+		return Math.random() * (Double.MAX_VALUE - Double.MIN_VALUE) +
+				Double.MIN_VALUE;
 	}
 }
