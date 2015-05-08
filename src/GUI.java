@@ -6,11 +6,16 @@
  */
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GUI extends Thread {
 	private CAL_GUI gui;
 	private Object obj;
 	private Class<?> c;
+        private Constructor constructor;
+        private Object loadedObject;
 	
 	/**
 	 * Public default constructor.
@@ -25,6 +30,10 @@ public class GUI extends Thread {
 		try {
 			Field fgx = c.getField("gridgx");
 			Field fgy = c.getField("gridgy");
+                        
+                        //constructor = c.getConstructor();
+                        //loadedObject = constructor.newInstance();
+                        //loadedObject.getClass().cast(obj);
 			
 			int gx = fgx.getInt(obj);
 			int gy = fgy.getInt(obj);
@@ -42,7 +51,13 @@ public class GUI extends Thread {
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}/* catch (InstantiationException ex) {
+                        ex.printStackTrace();
+                } catch (InvocationTargetException ex) {
+                        ex.printStackTrace();
+                } catch (NoSuchMethodException ex) {
+                        ex.printStackTrace();
+                } */
 	}
 	
 	/**
@@ -179,6 +194,45 @@ public class GUI extends Thread {
 	 * Override from Thread superclass.
 	 */
 	public void run() {
-		
+            Method meth = null;
+            Field fArrayList = null;
+            ArrayList<Cell> arrayList;
+
+            try {
+                meth = c.getMethod("cal_it", null);
+            } catch (NoSuchMethodException ex) {
+            } catch (SecurityException ex) {
+            }
+            while(true)
+            {
+                try {
+                    
+                    fArrayList = c.getField("cells");
+                    arrayList = (ArrayList<Cell>) fArrayList.get(obj);
+                    
+                    gui.retrieveCellList(arrayList);
+                    gui.render();
+                    
+                    Thread.sleep(500);
+                   
+                    meth.invoke(obj, null);
+
+                   
+                } catch (IllegalAccessException ex) {
+                    System.out.println(ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    System.out.println(ex.getMessage());
+                } catch (InvocationTargetException ex) {
+                    System.out.println(ex.getMessage());
+                } catch (NoSuchFieldException ex) {
+                   System.out.println(ex.getMessage());
+                } catch (SecurityException ex) {
+                    System.out.println(ex.getMessage());
+                } catch (InterruptedException ex) {
+                    System.out.println("Interupted");
+                }
+                
+                
+            }
 	}
 }
