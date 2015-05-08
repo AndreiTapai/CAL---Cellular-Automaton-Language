@@ -61,6 +61,7 @@ public class CAL_GUI {
 		/**
 		 * Draws the grid.
 		 */
+                @Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
@@ -101,6 +102,8 @@ public class CAL_GUI {
 
 	/**
 	 * Constructor. Initializes GUI.
+         * @param rows
+         * @param cols
 	 */
 	public CAL_GUI(int rows, int cols) {
 		window = new JFrame("Cellular Automaton Language GUI");
