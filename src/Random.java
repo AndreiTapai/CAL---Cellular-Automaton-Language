@@ -222,7 +222,12 @@ public class Random {
 	 * @return A random string with a length in the specified range.
 	 */
 	public static String random(int[][] length, boolean strflag) {
+		// null or empty length range parameter
+		if(length == null || length.length == 0) {
+			return random(new String[0]);
+		}
 		
+		return random(random(length));
 	}
 	
 	/**
