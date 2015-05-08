@@ -4,6 +4,9 @@
  *
  */
 public class Random {
+	private static final int MAX_STR_LEN = 255;
+	private static final int MAX_ARR_LEN = 10000;
+	
 	/**
 	 * Boolean type random method.
 	 * 
@@ -235,7 +238,7 @@ public class Random {
 	public static String random(String[] range) {
 		// no parameters
 		if(range == null || range.length == 0) {
-			int length = (int) (Math.random() * 255) + 1;
+			int length = (int) (Math.random() * MAX_STR_LEN) + 1;
 			return random(length);
 		}
 		
@@ -267,7 +270,7 @@ public class Random {
 	 * method from the int type random().
 	 * @return A random string with a length in the specified range.
 	 */
-	public static String random(int[][] length, boolean strflag) {
+	public static String random(int[][] length, String strflag) {
 		// null or empty length range parameter
 		if(length == null || length.length == 0) {
 			return random(new String[0]);
