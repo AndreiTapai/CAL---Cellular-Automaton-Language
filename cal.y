@@ -14,7 +14,7 @@
 %token DECREMENT INCREMENT EQUALS NOTEQUALS GREATER GREATEREQUALS LESS LESSEQUALS FLOORDIVIDE
 %token VARIABLE
 
-%nonassoc IF ELSEIF ELSE
+%right IF ELSEIF ELSE 
 %left AND OR NOR XOR NAND
 %left '-' '+' '.'
 %left '*' '/' FLOORDIVIDE
@@ -62,14 +62,15 @@ expression          : expression '+' expression
                     | variable
                     | variable INCREMENT
                     | variable DECREMENT
+                    | VARIABLE '[' arrayIndex ']'
                     | value
                     ;
 conditional         : expression condition expression
                     | expression condition expression logic conditional
                     | NOT conditional
                     ;
-iteration           : IF '(' conditional ')' block %prec IF
-                    | IF '(' conditional ')' block elseif %prec ELSEIF 
+iteration           : IF '(' conditional ')' block
+                    | IF '(' conditional ')' block elseif
                     | IF '(' conditional ')' block elseif ELSE block
                     | IF '(' conditional ')' block ELSE block
                     | FOR '(' forStatement ',' conditional ',' forStatement ')' block
@@ -161,8 +162,11 @@ logic               : AND
                     ;
 block               : '|' statements '|'
                     | statement
+                    | '|' '|'
                     ;
 functionBlock       : '|' statements return '|'
+                    | '|' return '|'
+                    | '|' statements'|'
                     | '|' '|'
                     ;
 return              : RETURN value
