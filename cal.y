@@ -55,15 +55,9 @@ variableDeclaration : type VARIABLE
                     ;                   
 variableDefinition  : type VARIABLE '=' expression
                     | VARIABLE '[' arrayIndex ']' '=' expression 
-                    | VARIABLE '=' expression
-                    | VARIABLE '=' functionCall
-                    | VARIABLE assign expression 
-                    | iterable '.' VARIABLE '=' expression
-                    | iterable '.' VARIABLE '[' arrayIndex ']' '=' expression
-                    | iterable '.' VARIABLE '[' arrayIndex ']' assign expression
-                    | iterables '.' VARIABLE '=' expression
-                    | iterables '.' VARIABLE '[' arrayIndex ']' '=' expression  
-                    | iterables '.' VARIABLE '[' arrayIndex ']' assign expression
+                    | variable '=' expression
+                    | variable '=' functionCall
+                    | variable assign expression
                     ;
 functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
                     ;
@@ -77,6 +71,8 @@ expression          : expression '+' expression
                     | expression '^' expression
                     | expression FLOORDIVIDE expression
                     | variable
+                    | variable INCREMENT
+                    | variable DECREMENT
                     | value
                     ;
 conditional         : expression condition expression
@@ -101,12 +97,18 @@ continuation        : CONTINUE
                     | BREAK
                     ;
 variable            : VARIABLE
-                    | VARIABLE INCREMENT
-                    | VARIABLE DECREMENT
-                    | iterable '.' VARIABLE
-                    | iterables '.' VARIABLE
-                    | iterable '.' VARIABLE '[' arrayIndex ']'
-                    | iterables '.' VARIABLE '[' arrayIndex ']'
+                    | CELL '.' LIFE
+                    | CELL'.' VARIABLE
+                    | CELLS '.' LIFE
+                    | CELLS '.' VARIABLE
+                    | NEIGHBOR '.' LIFE
+                    | NEIGHBOR '.' VARIABLE
+                    | NEIGHBORS '.' LIFE
+                    | NEIGHBORS '.' VARIABLE
+                    | CELL '.' VARIABLE '[' arrayIndex ']'
+                    | NEIGHBOR '.' VARIABLE '[' arrayIndex ']'
+                    | CELLS '.' VARIABLE '[' arrayIndex ']'
+                    | NEIGHBORS '.' VARIABLE '[' arrayIndex ']'
                     ;
 iterable            : CELL
                     | NEIGHBOR
@@ -120,6 +122,8 @@ type                : INTEGER
                     | CHARACTER
                     | STRING
                     | VOID
+                    | CELL
+                    | NEIGHBOR
                     ;
 value               : INTEGERVAL
                     | FLOATVAL
@@ -152,7 +156,7 @@ block               : '|' statements '|'
                     | statement
                     ;
 functionBlock       : '|' statements return '|'
-                    | return
+                    | '|' '|'
                     ;
 return              : RETURN value
                     | RETURN variable
