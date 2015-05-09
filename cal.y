@@ -24,34 +24,34 @@
       
 %%
 
-program             : statements
+program             : statements                                          { $$ = $1; }
                     ;
-statements          : statement                                              
+statements          : statement                                           { $$ = $1; }                                  
                     | statement statements
                     ;
-statement           : headerStatement 
-                    | variableStatement
-                    | functionStatement
-                    | continuation
-                    | expressionStatement
-                    | iteration
+statement           : headerStatement                                     { $$ = $1; }
+                    | variableStatement                                   { $$ = $1; }
+                    | functionStatement                                   { $$ = $1; }
+                    | continuation                                        { $$ = $1; }
+                    | expressionStatement                                 { $$ = $1; }
+                    | iteration                                           { $$ = $1; }
                     ;
-headerStatement     : gridDefinition
-                    | cellDefinition
+headerStatement     : gridDefinition                                      { $$ = $1; }
+                    | cellDefinition                                      { $$ = $1; }
                     ;
-variableStatement   : variableDeclaration
-                    | variableDefinition
+variableStatement   : variableDeclaration                                 { $$ = $1; }
+                    | variableDefinition                                  { $$ = $1; }
                     ;
-functionStatement   : functionDeclaration
-                    | functionCall
+functionStatement   : functionDeclaration                                 { $$ = $1; }
+                    | functionCall                                        { $$ = $1; }
                     ;
 continuation        : CONTINUE
                     | BREAK
                     ;
-expressionStatement : variable
+expressionStatement : variable                                            { $$ = $1; }
                     | variable INCREMENT
                     | variable DECREMENT
-                    | value
+                    | value                                               { $$ = $1; }
                     ;
 expression          : expression '+' expression
                     | expression '-' expression
@@ -59,10 +59,10 @@ expression          : expression '+' expression
                     | expression '/' expression
                     | expression '^' expression
                     | expression FLOORDIVIDE expression
-                    | variable
+                    | variable                                             { $$ = $1; }
                     | variable INCREMENT
                     | variable DECREMENT
-                    | value
+                    | value                                                { $$ = $1; }
                     ;
 conditional         : expression condition expression
                     | expression condition expression logic conditional
@@ -96,7 +96,7 @@ functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
 functionCall        : VARIABLE '(' actuals ')'
                     | RANDOM '(' randomActuals')'
                     ;
-forStatement        : variableStatement
+forStatement        : variableStatement                                       { $$ = $1; }
                     | variable INCREMENT
                     | variable DECREMENT
                     ;
@@ -173,17 +173,17 @@ parameters          :
                     | type VARIABLE ',' parameters
                     | CELL VARIABLE
                     ;
-actuals             : variable
+actuals             : variable                                           { $$ = $1; }
                     | variable ',' actuals
                     ;
 randomActuals       : 
-                    | value
+                    | value                                              { $$ = $1; }
                     | value ',' randomActuals
                     | value '~' value
                     | value '~' value ',' randomActuals
                     ;
 arrayIndex          : INTEGERVAL
-                    | variable
+                    | variable                                           { $$ = $1; }
                     ;
 gridtype            : TRIANGULAR
                     | SQUARE
