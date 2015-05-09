@@ -26,43 +26,32 @@
 
 program             : statements
                     ;
-statements          : statement
+statements          : statement                                              
                     | statement statements
                     ;
-statement           : header
-                    | expression
+statement           : headerStatement 
                     | variableStatement
-                    | conditional
-                    | iteration
+                    | functionStatement
                     | continuation
+                    | expressionStatement
+                    | iteration
                     ;
-header              : gridDefinition
+headerStatement     : gridDefinition
                     | cellDefinition
-                    ;
-gridDefinition      : GRID VARIABLE IS GRIDSIZE
-                    | VARIABLE IS gridtype
-                    ;
-cellDefinition      : CELLS HAVE VARIABLE
-                    | CELLS HAVE LIFE
                     ;
 variableStatement   : variableDeclaration
                     | variableDefinition
-                    | functionDeclaration
+                    ;
+functionStatement   : functionDeclaration
                     | functionCall
                     ;
-variableDeclaration : type VARIABLE 
-                    | type '[' INTEGERVAL ']' VARIABLE
-                    ;                   
-variableDefinition  : type VARIABLE '=' expression
-                    | VARIABLE '[' arrayIndex ']' '=' expression 
-                    | variable '=' expression
-                    | variable '=' functionCall
-                    | variable assign expression
+continuation        : CONTINUE
+                    | BREAK
                     ;
-functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
-                    ;
-functionCall        : VARIABLE '(' actuals ')'
-                    | RANDOM '(' randomActuals')'
+expressionStatement : variable
+                    | variable INCREMENT
+                    | variable DECREMENT
+                    | value
                     ;
 expression          : expression '+' expression
                     | expression '-' expression
@@ -87,16 +76,35 @@ iteration           : IF '(' conditional ')' block %prec IF
                     | FOREACH '(' iterable IN iterables ')' block
                     | WHILE '(' conditional ')' block
                     ;
+gridDefinition      : GRID VARIABLE IS GRIDSIZE 
+                    | VARIABLE IS gridtype
+                    ;
+cellDefinition      : CELLS HAVE VARIABLE
+                    | CELLS HAVE LIFE
+                    ;
+variableDeclaration : type VARIABLE 
+                    | type '[' INTEGERVAL ']' VARIABLE
+                    ;                   
+variableDefinition  : type VARIABLE '=' expression
+                    | VARIABLE '[' arrayIndex ']' '=' expression 
+                    | variable '=' expression
+                    | variable '=' functionCall
+                    | variable assign expression
+                    ;
+functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
+                    ;
+functionCall        : VARIABLE '(' actuals ')'
+                    | RANDOM '(' randomActuals')'
+                    ;
 forStatement        : variableStatement
                     | expression
                     ;
 elseif              : ELSEIF '(' conditional ')' block %prec IF
                     | ELSEIF '(' conditional ')' block elseif
                     ;
-continuation        : CONTINUE
-                    | BREAK
-                    ;
 variable            : VARIABLE
+                    | CELL
+                    | CELLS
                     | CELL '.' LIFE
                     | CELL'.' VARIABLE
                     | CELLS '.' LIFE
@@ -122,7 +130,6 @@ type                : INTEGER
                     | CHARACTER
                     | STRING
                     | VOID
-                    | CELL
                     | NEIGHBOR
                     ;
 value               : INTEGERVAL
@@ -164,6 +171,7 @@ return              : RETURN value
 parameters          : 
                     | type VARIABLE
                     | type VARIABLE ',' parameters
+                    | CELL VARIABLE
                     ;
 actuals             : variable
                     | variable ',' actuals
@@ -183,40 +191,40 @@ gridtype            : TRIANGULAR
                     ;
 %%
 private Yylex lexer;
+private int lineno = 0;
+
+private int yylex () {
+  int yyl_return = -1;
+  try {
+    yylval = new CalVal(0);
+    yyl_return = lexer.yylex();
+  }
+  catch (IOException e) {
+    System.err.println("IO error :"+e);
+  }
+  return yyl_return;
+}
 
 
-  private int yylex () {
-    int yyl_return = -1;
-    try {
-      yylval = new CalVal(0);
-      yyl_return = lexer.yylex();
-    }
-    catch (IOException e) {
-      System.err.println("IO error :"+e);
-    }
-    return yyl_return;
+public void yyerror (String error) {
+  System.err.println ("Error: " + error);
+}
+
+
+public Cal(Reader r) {
+  lexer = new Yylex(r, this);
+}
+
+public static void main(String args[]) throws IOException {
+
+  Cal yyparser;
+  if ( args.length > 0 ) {
+    // parse a file
+    yyparser = new Cal(new FileReader(args[0]));
+  }
+  else {
+    yyparser = new Cal(new InputStreamReader(System.in));
   }
 
-
-  public void yyerror (String error) {
-    System.err.println ("Error: " + error);
-  }
-
-
-  public Cal(Reader r) {
-    lexer = new Yylex(r, this);
-  }
-
-  public static void main(String args[]) throws IOException {
-
-    Cal yyparser;
-    if ( args.length > 0 ) {
-      // parse a file
-      yyparser = new Cal(new FileReader(args[0]));
-    }
-    else {
-      yyparser = new Cal(new InputStreamReader(System.in));
-    }
-
-    yyparser.yyparse();
-  }
+  yyparser.yyparse();
+}
