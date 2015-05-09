@@ -38,6 +38,8 @@ public class GUI extends Thread {
 			int gx = fgx.getInt(obj);
 			int gy = fgy.getInt(obj);
 
+			Class C = c.getDeclaredClasses()[0];
+			
 			gui = new CAL_GUI(gx, gy);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block

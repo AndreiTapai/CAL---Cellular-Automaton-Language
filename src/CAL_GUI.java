@@ -5,7 +5,9 @@
  */
 
 import java.awt.*;
+import java.lang.reflect.*;
 import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class CAL_GUI {
@@ -26,7 +28,8 @@ public class CAL_GUI {
 
 	static final int topPadding = 40;
 
-	ArrayList<Cell> cellList;
+	ArrayList<?> cellList;
+	Field life;
 	ArrayList<Rectangle> referenceList;
 	boolean listChanged;
 	boolean isFirstPass;
@@ -55,18 +58,23 @@ public class CAL_GUI {
 
 			if (listChanged) {
 				for (int i = 0; i < cellList.size(); i++) {
-					if (cellList.get(i).life == true) {
-						g2.setPaint(new Color(0, 0, 0));
-						g2.fillRect(referenceList.get(i).x,
-								referenceList.get(i).y,
-								referenceList.get(i).width,
-								referenceList.get(i).height);
-					} else {
-						g2.setPaint(new Color(128, 128, 128));
-						g2.fillRect(referenceList.get(i).x,
-								referenceList.get(i).y,
-								referenceList.get(i).width,
-								referenceList.get(i).height);
+					try {
+						if (life.getBoolean(cellList.get(i)) == true) {
+							g2.setPaint(new Color(0, 0, 0));
+							g2.fillRect(referenceList.get(i).x,
+									referenceList.get(i).y,
+									referenceList.get(i).width,
+									referenceList.get(i).height);
+						} else {
+							g2.setPaint(new Color(128, 128, 128));
+							g2.fillRect(referenceList.get(i).x,
+									referenceList.get(i).y,
+									referenceList.get(i).width,
+									referenceList.get(i).height);
+						}
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
@@ -132,7 +140,7 @@ public class CAL_GUI {
 	 * @param rows
 	 * @param cols
 	 */
-	public CAL_GUI(int rows, int cols) {
+	public CAL_GUI(int rows, int cols, Class c) {
 		window = new JFrame("Cellular Automaton Language GUI");
 		panel = new JPanel();
 		grid = new Grid();
@@ -140,11 +148,22 @@ public class CAL_GUI {
 		windowWidth = 750;
 		windowHeight = 770;
 		boardSize = 650;
-		cellList = new ArrayList<Cell>();
+		//TODO: figure out how to do cellList parameter
+		//cellList = new ArrayList<?>();
 		referenceList = new ArrayList<Rectangle>();
 		listChanged = false;
 		isFirstPass = true;
 
+		try {
+			life = c.getDeclaredField("life");
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		panel.setLayout(new BorderLayout());
 		panel.add(grid, BorderLayout.CENTER);
 
@@ -159,7 +178,7 @@ public class CAL_GUI {
 		numXCells = cols;
 	}
 
-	public void retrieveCellList(ArrayList<Cell> list) {
+	public void retrieveCellList(ArrayList<?> list) {
 		cellList = list;
 		listChanged = true;
 	}
