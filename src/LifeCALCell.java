@@ -7,10 +7,10 @@ import java.util.ArrayList;
  */
 public class LifeCALCell {
 
-    int x;
-    int y;
-    boolean life;
-    ArrayList<LifeCALCell> neighbors = new ArrayList<LifeCALCell>();
+    public int x;
+    public int y;
+    public boolean life;
+    public ArrayList<LifeCALCell> neighbors = new ArrayList<LifeCALCell>();
 
     public LifeCALCell(int x, int y) {
         this.x = x;

@@ -11,7 +11,7 @@
 
 public class TestDriver {
 	public static void main(String[] args) {
-            Class cl = null;
+            Class mainClass = null;
             Class cellClass = null;
             Object instance = null;
                 if (args.length != 3)
@@ -26,14 +26,14 @@ public class TestDriver {
                     int runFor = Integer.parseInt(args[2]);
                     
                     try {
-                        cl = Class.forName(mainClassName);
+                        mainClass = Class.forName(mainClassName);
                         cellClass = Class.forName(cellClassName);
                     } catch (ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
                     
                 try {
-                    instance = cl.newInstance();
+                    instance = mainClass.newInstance();
                 } catch (InstantiationException ex) {
                     ex.printStackTrace();
                 } catch (IllegalAccessException ex) {

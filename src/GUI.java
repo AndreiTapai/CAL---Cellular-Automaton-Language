@@ -14,9 +14,6 @@ public class GUI extends Thread {
 	private CAL_GUI gui;
 	private Object obj;
 	private Class<?> oclass; //main class
-	private Class<?> cclass; //cell class
-	private Constructor constructor;
-	private Object loadedObject;
 
 	/**
 	 * Public default constructor.
@@ -38,10 +35,8 @@ public class GUI extends Thread {
 
 			int gx = fgx.getInt(obj);
 			int gy = fgy.getInt(obj);
-
-			Class cclass = cell.getClass();
 			
-			gui = new CAL_GUI(gx, gy, cclass);
+			gui = new CAL_GUI(gx, gy, cell);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
