@@ -5,8 +5,8 @@ import java.util.ArrayList;
  * @author Andrei
  */
 public class LifeCAL {
-	public int gridgx = 50;
-	public int gridgy = 50;
+	public int gridgx = 5;
+	public int gridgy = 5;
 
 	public ArrayList<LifeCALCell> cells = new ArrayList<LifeCALCell>();
 
@@ -17,6 +17,7 @@ public class LifeCAL {
 			}
 
 		for (LifeCALCell cell : cells) {
+                    System.out.println("Initial Cell: " + cell.x + ", " + cell.y);
 			if (cell.x > 0)
 				cell.addNeighbors(getNeighbors(cell.x - 1, cell.y));
 			if (cell.y > 0)
@@ -39,7 +40,8 @@ public class LifeCAL {
 
 	public LifeCALCell getNeighbors(int x, int y) {
 		for (int i = 0; i < cells.size(); i++)
-			if (cells.get(i).x == x && cells.get(i).y == y) {
+			if (cells.get(i).x == x && cells.get(i).y == y) {                                
+                                System.out.println("Neighbor: " + cells.get(i).x + ", " + cells.get(i).y);
 				return (LifeCALCell) cells.get(i);
 			}
 		return null; // Shouldn't be reachable
