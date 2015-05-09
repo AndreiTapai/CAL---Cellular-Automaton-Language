@@ -17,6 +17,12 @@ public class LifeCALCell {
 		java.util.Random r = new java.util.Random();
 		life = r.nextBoolean();
 	}
+	
+	public LifeCALCell(LifeCALCell c) {
+		this.x = c.x;
+		this.y = c.y;
+		this.life = c.life;
+	}
 
 	public void addNeighbors(LifeCALCell c) {
 		this.neighbors.add(c);
