@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class GUI extends Thread {
 	private CAL_GUI gui;
 	private Object obj;
-	private Class<?> oclass; //main class
+	private Class<?> oclass; // main class
 
 	/**
 	 * Public default constructor.
@@ -35,7 +35,7 @@ public class GUI extends Thread {
 
 			int gx = fgx.getInt(obj);
 			int gy = fgy.getInt(obj);
-			
+
 			gui = new CAL_GUI(gx, gy, cell);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block

@@ -57,9 +57,9 @@ public class LifeCAL {
 
 	public void cal_it() {
 		int liveneighbors = 0;
-		
+
 		ArrayList<LifeCALCell> ctemp = new ArrayList<LifeCALCell>(cells);
-		
+
 		for (LifeCALCell c : cells) {
 			liveneighbors = num_live_neighbors(c);
 
@@ -72,7 +72,7 @@ public class LifeCAL {
 			} else {
 			}
 		}
-		
+
 		cells = ctemp;
 	}
 }
