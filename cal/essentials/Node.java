@@ -30,6 +30,45 @@ public class Node{
         else if (nodeName == "IN"){
         	return ":";
         }
+                else if (nodeName == "EQUALS"){
+        	return "==";
+        }
+        else if (nodeName == "GREATER"){
+        	return ">";
+        }
+        else if (nodeName == "GREATEREQUALS"){
+        	return ">=";
+        }
+        else if (nodeName == "LESS"){
+        	return "<";
+        }
+        else if (nodeName == "LESSEQUALS"){
+        	return "<=";
+        }
+        else if (nodeName == "NOTEQUALS"){
+        	return "!=";
+        }
+        else if (nodeName == "NOT"){
+        	return "!";
+        }
+        else if (nodeName == "AND"){
+        	return "&&";
+        }
+        else if (nodeName == "OR"){
+        	return "||";
+        }
+        else if (nodeName == "XOR"){
+        	return "^";
+        }
+        /*NAND
+         * NOR
+         */
+        else if (nodeName == "CONTINUE"){
+        	return "continue";
+        }
+        else if (nodeName == "BREAK"){
+        	return "break";
+        }
         else {
         	return nodeName;
         }
