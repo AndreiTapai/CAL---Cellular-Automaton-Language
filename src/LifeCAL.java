@@ -59,22 +59,28 @@ public class LifeCAL {
 
 	public void cal_it() {
 		int liveneighbors = 0;
+
+		boolean[] ctemp = new boolean[cells.size()];
 		
-		ArrayList<LifeCALCell> ctemp = new ArrayList<LifeCALCell>(cells);
-		
+		for(int i = 0; i < cells.size(); i ++) {
+			ctemp[i] = cells.get(i).life;
+		}
+
 		for (LifeCALCell c : cells) {
 			liveneighbors = num_live_neighbors(c);
 
 			if (c.life == true && liveneighbors < 2) {
-				ctemp.get(cells.indexOf(c)).life = false;
+				ctemp[cells.indexOf(c)] = false;
 			} else if (c.life == true && liveneighbors > 3) {
-				ctemp.get(cells.indexOf(c)).life = false;
+				ctemp[cells.indexOf(c)] = false;
 			} else if (c.life == false && liveneighbors == 3) {
-				ctemp.get(cells.indexOf(c)).life = true;
+				ctemp[cells.indexOf(c)] = true;
 			} else {
 			}
 		}
-		
-		cells = ctemp;
+
+		for(int i = 0; i < cells.size(); i ++) {
+			cells.get(i).life = ctemp[i];
+		}
 	}
 }

@@ -64,7 +64,7 @@ public class CAL_GUI {
 							g2.fillRect(referenceList.get(i).x,
 									referenceList.get(i).y,
 									referenceList.get(i).width,
-									referenceList.get(i).height);                                                        
+									referenceList.get(i).height);
 						} else {
 							g2.setPaint(new Color(255, 255, 255));
 							g2.fillRect(referenceList.get(i).x,
@@ -79,23 +79,26 @@ public class CAL_GUI {
 				}
 			}
 		}
-                
-                private void drawCenteredString(Graphics2D g2, String string, int x, int y) {
-                        Font font = new Font("SansSerif", Font.PLAIN, 8);
-                        Color color = new Color(0,0,255);
+
+		private void drawCenteredString(Graphics2D g2, String string, int x,
+				int y) {
+			Font font = new Font("SansSerif", Font.PLAIN, 8);
+			Color color = new Color(0, 0, 255);
 			int numLines = string.split("\n", -1).length;
-			
+
 			g2.setFont(font);
 			g2.setPaint(color);
 
 			FontMetrics fm = g2.getFontMetrics();
-		    
+
 			int num = 1;
 			for (String line : string.split("\n")) {
 				int w = fm.stringWidth(line);
 				int h = fm.getAscent() + fm.getDescent();
 
-				g2.drawString(line, x - w/2, y + (int) (((double) num - ((double) numLines + 1)/2)*h*0.75) - h/2 + fm.getAscent());
+				g2.drawString(line, x - w / 2, y
+						+ (int) (((double) num - ((double) numLines + 1) / 2)
+								* h * 0.75) - h / 2 + fm.getAscent());
 				num++;
 			}
 		}
@@ -182,7 +185,7 @@ public class CAL_GUI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		panel.setLayout(new BorderLayout());
 		panel.add(grid, BorderLayout.CENTER);
 
