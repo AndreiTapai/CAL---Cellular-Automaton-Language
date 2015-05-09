@@ -21,7 +21,7 @@ public class GUI extends Thread {
 	/**
 	 * Public default constructor.
 	 */
-	public GUI(Object object, Cell cell) {
+	public GUI(Object object, Class cell, int runFor) {
 		// Field[] fields = getFields(classname);
 		// Method[] methods = getMethods(classname);
 
@@ -203,7 +203,7 @@ public class GUI extends Thread {
 	public void run() {
 		Method meth = null;
 		Field fArrayList = null;
-		ArrayList<Cell> arrayList;
+		ArrayList<?> arrayList;
 
 		try {
 			meth = oclass.getMethod("cal_it", null);
@@ -214,7 +214,7 @@ public class GUI extends Thread {
 			try {
 
 				fArrayList = oclass.getField("cells");
-				arrayList = (ArrayList<Cell>) fArrayList.get(obj);
+				arrayList = (ArrayList<?>) fArrayList.get(obj);
 
 				gui.retrieveCellList(arrayList);
 				gui.render();

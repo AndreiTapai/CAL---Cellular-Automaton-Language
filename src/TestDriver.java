@@ -1,6 +1,4 @@
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -14,17 +12,22 @@ import java.util.logging.Logger;
 public class TestDriver {
 	public static void main(String[] args) {
             Class cl = null;
+            Class cellClass = null;
             Object instance = null;
-                if (args.length != 1)
+                if (args.length != 3)
                 {
                     System.out.println("You must include the class name as an argument");
                     System.exit(-1);
                 }
                 else
                 {
-                    String className = args[0];
+                    String mainClassName = args[0];
+                    String cellClassName = args[1];
+                    int runFor = Integer.parseInt(args[2]);
+                    
                     try {
-                        cl = Class.forName(className);
+                        cl = Class.forName(mainClassName);
+                        cellClass = Class.forName(cellClassName);
                     } catch (ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
@@ -37,7 +40,7 @@ public class TestDriver {
                     ex.printStackTrace();
                 }
 
-                    GUI gui = new GUI(instance);
+                    GUI gui = new GUI(instance, cellClass, runFor);
                     gui.start();
                 }
             
