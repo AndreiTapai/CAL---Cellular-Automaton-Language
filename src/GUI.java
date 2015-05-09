@@ -13,23 +13,24 @@ import java.util.logging.Logger;
 public class GUI extends Thread {
 	private CAL_GUI gui;
 	private Object obj;
-	private Class<?> c;
+	private Class<?> oclass; //main class
+	private Class<?> cclass; //cell class
 	private Constructor constructor;
 	private Object loadedObject;
 
 	/**
 	 * Public default constructor.
 	 */
-	public GUI(Object object) {
+	public GUI(Object object, Cell cell) {
 		// Field[] fields = getFields(classname);
 		// Method[] methods = getMethods(classname);
 
 		obj = object;
-		c = obj.getClass();
+		oclass = obj.getClass();
 
 		try {
-			Field fgx = c.getField("gridgx");
-			Field fgy = c.getField("gridgy");
+			Field fgx = oclass.getField("gridgx");
+			Field fgy = oclass.getField("gridgy");
 
 			// constructor = c.getConstructor();
 			// loadedObject = constructor.newInstance();
@@ -38,9 +39,9 @@ public class GUI extends Thread {
 			int gx = fgx.getInt(obj);
 			int gy = fgy.getInt(obj);
 
-			Class C = c.getDeclaredClasses()[0];
+			Class cclass = cell.getClass();
 			
-			gui = new CAL_GUI(gx, gy);
+			gui = new CAL_GUI(gx, gy, cclass);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -205,14 +206,14 @@ public class GUI extends Thread {
 		ArrayList<Cell> arrayList;
 
 		try {
-			meth = c.getMethod("cal_it", null);
+			meth = oclass.getMethod("cal_it", null);
 		} catch (NoSuchMethodException ex) {
 		} catch (SecurityException ex) {
 		}
 		while (true) {
 			try {
 
-				fArrayList = c.getField("cells");
+				fArrayList = oclass.getField("cells");
 				arrayList = (ArrayList<Cell>) fArrayList.get(obj);
 
 				gui.retrieveCellList(arrayList);

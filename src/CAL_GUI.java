@@ -160,7 +160,7 @@ public class CAL_GUI {
 	 * @param rows
 	 * @param cols
 	 */
-	public CAL_GUI(int rows, int cols, Class c) {
+	public CAL_GUI(int rows, int cols, Class cellclass) {
 		window = new JFrame("Cellular Automaton Language GUI");
 		panel = new JPanel();
 		grid = new Grid();
@@ -168,14 +168,13 @@ public class CAL_GUI {
 		windowWidth = 750;
 		windowHeight = 770;
 		boardSize = 650;
-		//TODO: figure out how to do cellList parameter
-		//cellList = new ArrayList<?>();
+		cellList = new ArrayList();
 		referenceList = new ArrayList<Rectangle>();
 		listChanged = false;
 		isFirstPass = true;
 
 		try {
-			life = c.getDeclaredField("life");
+			life = cellclass.getDeclaredField("life");
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
