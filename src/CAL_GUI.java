@@ -27,16 +27,16 @@ public class CAL_GUI {
 	static final int topPadding = 40;
 
 	ArrayList<Cell> cellList;
-        ArrayList<Rectangle> referenceList;
-        boolean listChanged;
-        boolean isFirstPass;
+	ArrayList<Rectangle> referenceList;
+	boolean listChanged;
+	boolean isFirstPass;
 
 	/**
 	 * Private cell grid class.
 	 */
 	@SuppressWarnings("serial")
 	private class Grid extends JPanel {
-            
+
 		/**
 		 * Draws the specified cell.
 		 * 
@@ -54,28 +54,28 @@ public class CAL_GUI {
 			g2.drawRect(x, y, width, height);
 
 			if (listChanged) {
-				for (int i = 0; i < cellList.size(); i++)
-                                {
-                                    if (cellList.get(i).life == true)
-                                    {
-                                        g2.setPaint(new Color(0, 0, 0));
-                                        g2.fillRect(referenceList.get(i).x, referenceList.get(i).y,
-						referenceList.get(i).width, referenceList.get(i).height);
-                                    }
-                                    else
-                                    {
-                                        g2.setPaint(new Color(128, 128, 128));
-                                        g2.fillRect(referenceList.get(i).x, referenceList.get(i).y,
-						referenceList.get(i).width, referenceList.get(i).height);
-                                    }
-                                }
+				for (int i = 0; i < cellList.size(); i++) {
+					if (cellList.get(i).life == true) {
+						g2.setPaint(new Color(0, 0, 0));
+						g2.fillRect(referenceList.get(i).x,
+								referenceList.get(i).y,
+								referenceList.get(i).width,
+								referenceList.get(i).height);
+					} else {
+						g2.setPaint(new Color(128, 128, 128));
+						g2.fillRect(referenceList.get(i).x,
+								referenceList.get(i).y,
+								referenceList.get(i).width,
+								referenceList.get(i).height);
+					}
+				}
 			}
 		}
 
 		/**
 		 * Draws the grid.
 		 */
-                @Override
+		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
@@ -107,32 +107,30 @@ public class CAL_GUI {
 			g2.setPaint(new Color(255, 255, 255));
 			g2.fillRect(x1, y1, x2 - x1, y2 - y1);
 
-                        if (isFirstPass)
-                        {
-                            for (int row = 0; row < numYCells; row++)
-				for (int col = 0; col < numXCells; col++)
-                                {
-                                        
-                                    Rectangle rec = new Rectangle(xOffset + (col * cellWidth), yOffset
-							+ (row * cellHeight), cellWidth, cellHeight);
-                                    referenceList.add(rec);
-                                }
-                            isFirstPass = false;
-                        }
-                        else
-                        {
-                            for (int row = 0; row < numYCells; row++)
-				for (int col = 0; col < numXCells; col++)
-                                    renderCell(g2, xOffset + (col * cellWidth), yOffset
-							+ (row * cellHeight), cellWidth, cellHeight);
-                        }                                       
+			if (isFirstPass) {
+				for (int row = 0; row < numYCells; row++)
+					for (int col = 0; col < numXCells; col++) {
+
+						Rectangle rec = new Rectangle(xOffset
+								+ (col * cellWidth), yOffset
+								+ (row * cellHeight), cellWidth, cellHeight);
+						referenceList.add(rec);
+					}
+				isFirstPass = false;
+			} else {
+				for (int row = 0; row < numYCells; row++)
+					for (int col = 0; col < numXCells; col++)
+						renderCell(g2, xOffset + (col * cellWidth), yOffset
+								+ (row * cellHeight), cellWidth, cellHeight);
+			}
 		}
 	}
 
 	/**
 	 * Constructor. Initializes GUI.
-         * @param rows
-         * @param cols
+	 * 
+	 * @param rows
+	 * @param cols
 	 */
 	public CAL_GUI(int rows, int cols) {
 		window = new JFrame("Cellular Automaton Language GUI");
@@ -143,9 +141,9 @@ public class CAL_GUI {
 		windowHeight = 770;
 		boardSize = 650;
 		cellList = new ArrayList<Cell>();
-                referenceList = new ArrayList<Rectangle>();
-                listChanged = false;
-                isFirstPass = true;
+		referenceList = new ArrayList<Rectangle>();
+		listChanged = false;
+		isFirstPass = true;
 
 		panel.setLayout(new BorderLayout());
 		panel.add(grid, BorderLayout.CENTER);
@@ -156,16 +154,15 @@ public class CAL_GUI {
 		window.setLocation(500, 100);
 		window.setVisible(true);
 		window.setResizable(false);
-		
+
 		numYCells = rows;
 		numXCells = cols;
 	}
 
-        public void retrieveCellList(ArrayList<Cell> list)
-        {
-            cellList = list;
-            listChanged = true;
-        }
+	public void retrieveCellList(ArrayList<Cell> list) {
+		cellList = list;
+		listChanged = true;
+	}
 
 	/**
 	 * Repaints grid.
