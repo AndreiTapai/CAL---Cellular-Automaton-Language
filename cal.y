@@ -72,7 +72,7 @@ iteration           : IF '(' conditional ')' block %prec IF
                     | IF '(' conditional ')' block elseif %prec ELSEIF 
                     | IF '(' conditional ')' block elseif ELSE block
                     | IF '(' conditional ')' block ELSE block
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block
+                    | FOR '(' variableStatement ',' conditional ',' variableStatement ')' block
                     | FOREACH '(' iterable IN iterables ')' block
                     | WHILE '(' conditional ')' block
                     ;
@@ -95,9 +95,6 @@ functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
                     ;
 functionCall        : VARIABLE '(' actuals ')'
                     | RANDOM '(' randomActuals')'
-                    ;
-forStatement        : variableStatement
-                    | expression
                     ;
 elseif              : ELSEIF '(' conditional ')' block %prec IF
                     | ELSEIF '(' conditional ')' block elseif
