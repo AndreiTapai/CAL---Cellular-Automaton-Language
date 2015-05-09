@@ -15,7 +15,7 @@ run: Cal.class
 build: clean Cal.class
 
 clean:
-	rm -f *~ *.class *.java
+	rm -f *~ *.class *.java cal/essentials/*.class
 
 Cal.class: Yylex.java Cal.java
 	$(JAVAC) Cal.java
