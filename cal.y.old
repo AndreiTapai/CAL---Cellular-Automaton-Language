@@ -14,7 +14,7 @@
 %token DECREMENT INCREMENT EQUALS NOTEQUALS GREATER GREATEREQUALS LESS LESSEQUALS FLOORDIVIDE
 %token VARIABLE
 
-%right IF ELSEIF ELSE 
+%nonassoc IF ELSEIF ELSE
 %left AND OR NOR XOR NAND
 %left '-' '+' '.'
 %left '*' '/' FLOORDIVIDE
@@ -24,34 +24,34 @@
       
 %%
 
-program             : statements                                            { $$ = $1; }
+program             : statements                                          { $$ = $1; }
                     ;
-statements          : statement                                             { $$ = $1; } 
-                    | statement statements                                  { $$ = $1; }
+statements          : statement                                           { $$ = $1; }                                  
+                    | statement statements
                     ;
-statement           : headerStatement                                       { $$ = $1; }
-                    | variableStatement                                     { $$ = $1; }
-                    | functionStatement                                     { $$ = $1; }
-                    | continuation                                          { $$ = $1; }
-                    | expressionStatement                                   { $$ = $1; }
-                    | iteration                                             { $$ = $1; }
+statement           : headerStatement                                     { $$ = $1; }
+                    | variableStatement                                   { $$ = $1; }
+                    | functionStatement                                   { $$ = $1; }
+                    | continuation                                        { $$ = $1; }
+                    | expressionStatement                                 { $$ = $1; }
+                    | iteration                                           { $$ = $1; }
                     ;
-headerStatement     : gridDefinition                                        { $$ = $1; }
-                    | cellDefinition                                        { $$ = $1; }
+headerStatement     : gridDefinition                                      { $$ = $1; }
+                    | cellDefinition                                      { $$ = $1; }
                     ;
-variableStatement   : variableDeclaration                                   { $$ = $1; }
-                    | variableDefinition                                    { $$ = $1; }
+variableStatement   : variableDeclaration                                 { $$ = $1; }
+                    | variableDefinition                                  { $$ = $1; }
                     ;
-functionStatement   : functionDeclaration                                   { $$ = $1; }
-                    | functionCall                                          { $$ = $1; }
+functionStatement   : functionDeclaration                                 { $$ = $1; }
+                    | functionCall                                        { $$ = $1; }
                     ;
 continuation        : CONTINUE
                     | BREAK
                     ;
-expressionStatement : variable                                              { $$ = $1; }
+expressionStatement : variable                                            { $$ = $1; }
                     | variable INCREMENT
                     | variable DECREMENT
-                    | value                                                 { $$ = $1; }
+                    | value                                               { $$ = $1; }
                     ;
 expression          : expression '+' expression
                     | expression '-' expression
@@ -59,18 +59,17 @@ expression          : expression '+' expression
                     | expression '/' expression
                     | expression '^' expression
                     | expression FLOORDIVIDE expression
-                    | variable                                              { $$ = $1; }
+                    | variable                                             { $$ = $1; }
                     | variable INCREMENT
                     | variable DECREMENT
-                    | VARIABLE '[' arrayIndex ']'
-                    | value                                                 { $$ = $1; }
+                    | value                                                { $$ = $1; }
                     ;
 conditional         : expression condition expression
                     | expression condition expression logic conditional
                     | NOT conditional
                     ;
-iteration           : IF '(' conditional ')' block
-                    | IF '(' conditional ')' block elseif
+iteration           : IF '(' conditional ')' block %prec IF
+                    | IF '(' conditional ')' block elseif %prec ELSEIF 
                     | IF '(' conditional ')' block elseif ELSE block
                     | IF '(' conditional ')' block ELSE block
                     | FOR '(' forStatement ',' conditional ',' forStatement ')' block
@@ -97,7 +96,7 @@ functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
 functionCall        : VARIABLE '(' actuals ')'
                     | RANDOM '(' randomActuals')'
                     ;
-forStatement        : variableStatement                                     { $$ = $1; }
+forStatement        : variableStatement                                       { $$ = $1; }
                     | variable INCREMENT
                     | variable DECREMENT
                     ;
@@ -162,11 +161,8 @@ logic               : AND
                     ;
 block               : '|' statements '|'
                     | statement
-                    | '|' '|'
                     ;
 functionBlock       : '|' statements return '|'
-                    | '|' return '|'
-                    | '|' statements'|'
                     | '|' '|'
                     ;
 return              : RETURN value
@@ -177,17 +173,17 @@ parameters          :
                     | type VARIABLE ',' parameters
                     | CELL VARIABLE
                     ;
-actuals             : variable
+actuals             : variable                                           { $$ = $1; }
                     | variable ',' actuals
                     ;
 randomActuals       : 
-                    | value
+                    | value                                              { $$ = $1; }
                     | value ',' randomActuals
                     | value '~' value
                     | value '~' value ',' randomActuals
                     ;
 arrayIndex          : INTEGERVAL
-                    | variable
+                    | variable                                           { $$ = $1; }
                     ;
 gridtype            : TRIANGULAR
                     | SQUARE
