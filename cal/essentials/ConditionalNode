@@ -1,0 +1,38 @@
+package cal.essentials;
+
+public class ConditionalNode extends AbstractNode{
+
+    List <AbstractNode> children;
+
+    public ConditionalNode(AbstractNode expression1, AbstractNode condition, AbstractNode expression2){
+    
+        children.add(expression1);
+        children.add(condition);
+        children.add(expression2);
+    }
+    
+   public ConditionalNode(AbstractNode expression1, AbstractNode condition, AbstractNode expression2, AbstractNode logic, AbstractNode conditional){
+    
+        children.add(expression1);
+        children.add(condition);
+        children.add(expression2);
+        children.add(logic);
+        children.add(conditional);
+    }
+    
+    publicConditionalNode(AbstractNode NOT, AbstractNode conditional){
+    
+        children.add(NOT);
+        children.add(conditional);
+    }
+    
+    @override
+    public String toString(){
+    
+        String s = "";
+        for (Node n : children){
+            s += n.toString();
+        }
+        return s;
+    }
+}
