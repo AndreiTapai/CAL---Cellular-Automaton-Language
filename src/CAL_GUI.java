@@ -30,6 +30,7 @@ public class CAL_GUI {
 
 	ArrayList<?> cellList;
 	Field life;
+        Field neighbors;
 	ArrayList<Rectangle> referenceList;
 	boolean listChanged;
 	boolean isFirstPass;
@@ -70,7 +71,7 @@ public class CAL_GUI {
 							g2.fillRect(referenceList.get(i).x,
 									referenceList.get(i).y,
 									referenceList.get(i).width,
-									referenceList.get(i).height);
+									referenceList.get(i).height);                                                        
 						}
 					} catch (IllegalArgumentException | IllegalAccessException e) {
 						// TODO Auto-generated catch block
@@ -82,7 +83,7 @@ public class CAL_GUI {
 
 		private void drawCenteredString(Graphics2D g2, String string, int x,
 				int y) {
-			Font font = new Font("SansSerif", Font.PLAIN, 8);
+			Font font = new Font("SansSerif", Font.PLAIN, 10);
 			Color color = new Color(0, 0, 255);
 			int numLines = string.split("\n", -1).length;
 
@@ -178,6 +179,7 @@ public class CAL_GUI {
 
 		try {
 			life = cellclass.getDeclaredField("life");
+                        neighbors = cellclass.getDeclaredField("neighbors");
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
