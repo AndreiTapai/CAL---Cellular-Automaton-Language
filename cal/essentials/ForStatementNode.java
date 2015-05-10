@@ -13,10 +13,10 @@ public class ForStatementNode extends AbstractNode{
 	
 	public ForStatementNode(VariableNode v, String s){
 		var = v;
-		if (s == "INCREMENT"){
+		if (s == "++"){
 			sreturn = var.toJava() + "++";
 		}
-		else if (s == "DECREMENT"){
+		else if (s == "--"){
 			sreturn = var.toJava() + "--";
 		}
 	}
