@@ -9,7 +9,7 @@ public class FunctionCallNode extends AbstractNode {
 	}
 
 	public FunctionCallNode(RandomActualsNode r) {
-		sreturn = "random(" + r.toJava() + ")";
+		sreturn = "randCAL.random(" + r.toJava() + ")";
 	}
 
 	@Override
