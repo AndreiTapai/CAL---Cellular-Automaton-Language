@@ -23,7 +23,7 @@ import cal.essentials.*;
 %right ADDEQUAL SUBTRACTEQUAL MULTIPLYEQUAL DIVIDEEQUAL MODULOEQUAL FLOOREQUAL
       
 %%
-program             : statements                                            { root = new AbstractNode((StatementsNode)$1.obj); }
+program             : statements                                            { }
 statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
                     | statement statements  { 
                         $$ = new CalVal(new StatementsNode((StatementNode)$1.obj, ((StatementsNode)$2.obj).statements));
@@ -192,7 +192,6 @@ gridtype            : TRIANGULAR                    { $$ = new CalVal($1.sval); 
 %%
 private Yylex lexer;
 private int lineno = 0;
-private AbstractNode root;
 
 private int yylex () {
   int yyl_return = -1;
