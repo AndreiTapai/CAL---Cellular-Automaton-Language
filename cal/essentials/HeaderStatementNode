@@ -8,12 +8,12 @@ public class HeaderStatementNode extends AbstractNode{
 	
 	public HeaderStatementNode(GridDefinitionNode g){
 		gdef = g;
-		sreturn = g.toJava();
+		sreturn = gdef.toJava();
 	}
 	
 	public HeaderStatementNode(CellDefinitionNode c){
 		cdef = c;
-		sreturn = c.toJava();
+		sreturn = cdef.toJava();
 	}
 	
 	@Override
