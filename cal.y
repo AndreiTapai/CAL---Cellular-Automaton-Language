@@ -53,29 +53,29 @@ expressionStatement : variable                                              { $$
                     | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
                     | value                                                 { $$ = new CalVal(new ExpressionStatementNode((ValueNode)$1.obj)); }
                     ;
-expression          : expression '+' expression
-                    | expression '-' expression
-                    | expression '*' expression
-                    | expression '/' expression
-                    | expression '^' expression
-                    | expression FLOORDIVIDE expression
-                    | variable                                              { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
-                    | VARIABLE '[' arrayIndex ']'
-                    | value                                                 { $$ = $1; }
+expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression FLOORDIVIDE expression                      { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | variable                                               { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj)); }
+                    | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable '[' arrayIndex ']'                            { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, (ArrayIndexNode)$3.obj)); }
+                    | value                                                  { $$ = new CalVal(new ExpressionNode((ValueNode)$1.obj)); }
                     ;
-conditional         : expression condition expression                        
-                    | expression condition expression logic conditional      
-                    | NOT conditional                                        
+conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj)); }
+                    | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode) $1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
+                    | NOT conditional                                        { $$ = new CalVal(new ConditionalNode((ConditionalNode)$2.obj)); }
                     ;
-iteration           : IF '(' conditional ')' block                           
-                    | IF '(' conditional ')' block elseif                    
-                    | IF '(' conditional ')' block elseif ELSE block       
-                    | IF '(' conditional ')' block ELSE block                 
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    
-                    | FOREACH '(' iterable IN iterables ')' block             
-                    | WHILE '(' conditional ')' block                        
+iteration           : IF '(' conditional ')' block                                       { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }       
+                    | IF '(' conditional ')' block elseif                                { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj)); }
+                    | IF '(' conditional ')' block elseif ELSE block                     { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj, (BlockNode)$8.obj)); }
+                    | IF '(' conditional ')' block ELSE block                            { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationNode((ForStatementNode)$3.obj, (ConditionalNode)$5.obj, (ForStatementNode)$7.obj, (BlockNode)$9.obj)); }
+                    | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationNode((IterableNode)$3.obj, (IterablesNode)$5.obj, (BlockNode)$7.obj)); }
+                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
                     ;
 gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
                     | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $4, false)); }
