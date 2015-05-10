@@ -4,6 +4,7 @@ package cal.essentials;
  * This class represents a block of code.
  */
 public class BlockNode extends AbstractNode {
+	
 	private String sreturn;
 	private StatementsNode stmts;
 	private StatementNode stmt;
