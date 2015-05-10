@@ -19,10 +19,6 @@ public class ParametersNode extends AbstractNode{
 			index++;
 		}
 	}
-	@Override
-	public String toString(){
-
-	}
 	@Override 
 	public String toJava(){
 		String sval = "";

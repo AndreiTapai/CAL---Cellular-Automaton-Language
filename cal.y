@@ -29,7 +29,7 @@
       
 %%
 
-program             : statements                                            { $$ = $1; }
+program             : statements                                            { $$ = new CalVal(new StatementsNode()); }
                     ;
 statements          : statement                                             { $$ = $1; } 
                     | statement statements                                  { $$ = $1; }
@@ -98,7 +98,7 @@ variableDefinition  : type VARIABLE '=' expression
                     | variable assign expression
                     ;
 functionDeclaration : type VARIABLE '(' parameters ')' functionBlock {
-                        $$ = new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4, (FunctionBlockNode)$5);
+                        $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$5.obj));
                     }
                     ;
 functionCall        : VARIABLE '(' actuals ')'
@@ -171,18 +171,18 @@ block               : '|' statements '|'
                     | statement
                     | '|' '|'
                     ;
-functionBlock       : '|' statements return '|'     { $$ = new FunctionBlockNode($2, $3); }
-                    | '|' return '|'                { $$ = new FunctionBlockNode($2); }
-                    | '|' statements'|'             { $$ = new FunctionBlockNode($2); }
-                    | '|' '|'                       { $$ = new FunctionBlockNode(); }
+functionBlock       : '|' statements return '|'     { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj, (ReturnsNode)$3.obj)); }
+                    | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
+                    | '|' statements'|'             { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
+                    | '|' '|'                       { $$ = new CalVal(new FunctionBlockNode()); }
                     ;
-return              : RETURN value                  { $$ = new ReturnsNode($2.dval); } 
-                    | RETURN variable               { $$ = new ReturnsNode($2.sval); }
+return              : RETURN value                  { $$ = new CalVal(new ReturnsNode($2.dval)); } 
+                    | RETURN variable               { $$ = new CalVal(new ReturnsNode($2.sval)); }
                     ;
-parameters          :                               { $$ = new ParametersNode(); }
-                    | type VARIABLE                 { $$ = new ParametersNode($1.sval, $2.sval); }
-                    | type VARIABLE ',' parameters  { $$ = new ParametersNode($1, $2, $3); }
-                    | CELL VARIABLE                 { $$ = new ParametersNode($1, $2); }
+parameters          :                               { $$ = new CalVal(new ParametersNode()); }
+                    | type VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
+                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, $3.sval)); }
+                    | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     ;
 actuals             : variable
                     | variable ',' actuals
