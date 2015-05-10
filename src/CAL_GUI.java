@@ -211,6 +211,6 @@ public class CAL_GUI {
 	 * Repaints grid.
 	 */
 	public void render() {
-		grid.repaint(250);
+		grid.repaint();
 	}
 }

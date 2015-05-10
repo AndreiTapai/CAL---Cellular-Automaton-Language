@@ -214,7 +214,7 @@ public class GUI extends Thread {
 				gui.retrieveCellList(arrayList);
 				gui.render();
 
-				Thread.sleep(500);
+				Thread.sleep(2000);
 
 				meth.invoke(obj, null);
 
