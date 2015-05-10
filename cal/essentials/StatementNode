@@ -1,6 +1,6 @@
 package cal.essentials;
 
-public class Statement extends AbstractNode{
+public class StatementNode extends AbstractNode{
 
 	private String sreturn;
 	
