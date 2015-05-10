@@ -3,21 +3,31 @@ import java.util.ArrayList;
 
 public class ParametersNode extends AbstractNode{
 
-	private ArrayList<ArrayList<String>> params;
+	public ArrayList<ArrayList<String>> params;
 
-	public ParametersNode(String... args){
-		params = new ArrayList<ArrayList<String>>(2);
+	public ParametersNode(String type, String name, ArrayList<ArrayList<String>> params){
+		this.params = new ArrayList<ArrayList<String>>(2);
+		ArrayList<String> types = new ArrayList<String>();
+		ArrayList<String> names = new ArrayList<String>();
+		this.params.add(types);
+		this.params.add(names);
 
-		String arg;
-		for(int i = 0, index = 0; i < args.length; i++){
-			arg = args[i];
-			if(arg.equals(",")){
-				index = 0;
-				continue;
-			}
-			params.get(index).add(arg);
-			index++;
+		if(type != null && name != null){
+			this.params.get(0).add(type);
+			this.params.get(1).add(name);
 		}
+		if(params == null)
+			return;
+		for(String param : params.get(0))
+			this.params.get(0).add(param);
+		for(String param : params.get(1))
+			this.params.get(1).add(param);
+	}
+	public ParametersNode(String type, String name){
+		this(type, name, null);
+	}
+	public ParametersNode(){
+		this(null, null);
 	}
 	@Override 
 	public String toJava(){
@@ -29,7 +39,7 @@ public class ParametersNode extends AbstractNode{
 			sval += params.get(1).get(i);
 			sval += ",";
 		}
-		if(sval.charAt(sval.length() - 1) == ',')
+		if(sval.length() > 0 && sval.charAt(sval.length() - 1) == ',')
 			sval = new String(sval.substring(0, sval.length()-1));
 
 		return sval;
