@@ -24,6 +24,8 @@ import cal.essentials.*;
       
 %%
 
+program             : statements                                            { $$ = new CalVal(new StatementsNode()); } /* should be ProgramNode right? and do we need to declare this is root of AST? */
+                    ;
 statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
                     | statement statements                                  { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj, (StatementsNode)$2.obj)); }
                     ;
