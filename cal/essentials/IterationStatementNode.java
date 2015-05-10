@@ -1,6 +1,6 @@
 package cal.essentials;
 
-public class IterationNode extends AbstractNode {
+public class IterationStatementNode extends AbstractNode {
 
 	private String loopName;
 	private ConditionalNode cond;
@@ -13,7 +13,7 @@ public class IterationNode extends AbstractNode {
 	private IterablesNode iterables;
 	String sreturn;
 
-	public IterationNode(String s, ConditionalNode c, BlockNode b) {
+	public IterationStatementNode(String s, ConditionalNode c, BlockNode b) {
 		if (s == "IF") {
 			loopName = "if";
 		} else {
@@ -24,7 +24,7 @@ public class IterationNode extends AbstractNode {
 		sreturn += loopName + "(" + cond.toJava() + ")" + block.toJava();
 	}
 
-	public IterationNode(ConditionalNode c, BlockNode b, ElseIfNode e) {
+	public IterationStatementNode(ConditionalNode c, BlockNode b, ElseIfNode e) {
 		loopName = "if";
 		cond = c;
 		block = b;
@@ -33,7 +33,7 @@ public class IterationNode extends AbstractNode {
 				+ elseif.toJava();
 	}
 
-	public IterationNode(ConditionalNode c, BlockNode b, BlockNode b2) {
+	public IterationStatementNode(ConditionalNode c, BlockNode b, BlockNode b2) {
 		loopName = "if";
 		cond = c;
 		block = b;
@@ -42,7 +42,7 @@ public class IterationNode extends AbstractNode {
 				+ "else" + elseBlock.toJava();
 	}
 
-	public IterationNode(ConditionalNode c, BlockNode b, ElseIfNode e,
+	public IterationStatementNode(ConditionalNode c, BlockNode b, ElseIfNode e,
 			BlockNode b2) {
 		loopName = "if";
 		cond = c;
@@ -53,7 +53,7 @@ public class IterationNode extends AbstractNode {
 				+ elseif.toJava() + "else" + elseBlock.toJava();
 	}
 
-	public IterationNode(ForStatementNode fs1, ConditionalNode c,
+	public IterationStatementNode(ForStatementNode fs1, ConditionalNode c,
 			ForStatementNode fs2, BlockNode b) {
 		loopName = "for";
 		forStmt1 = fs1;
@@ -64,7 +64,7 @@ public class IterationNode extends AbstractNode {
 				+ "; " + forStmt2.toJava() + ")" + block.toJava();
 	}
 
-	public IterationNode(IterableNode it, IterablesNode its, BlockNode b) {
+	public IterationStatementNode(IterableNode it, IterablesNode its, BlockNode b) {
 		loopName = "for";
 		iterable = it;
 		iterables = its;
