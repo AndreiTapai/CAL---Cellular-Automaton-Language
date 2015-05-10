@@ -1,23 +1,28 @@
 package cal.essentials;
 
+/**
+ * Abstract Syntax Tree class. Represents the entire abstract syntax tree for
+ * a CAL program.
+ */
 public class AST {
-
+	
+	// the root node
 	private AbstractNode root;
 
+	/**
+	 * Constructor. Initializes root with a provided Node.
+	 * 
+	 * @param node
+	 */
 	public AST(AbstractNode node) {
 		root = node;
 	}
 
-	public void addNode(AbstractNode node) {
-		if (root.getLeft() == null)
-			root.setLeft(node);
-		else if (root.getRight() == null)
-			root.setRight(node);
-
-		addNode(root.getLeft());
-		addNode(root.getRight());
-	}
-
+	/**
+	 * toString() method for the AST.
+	 * 
+	 * @return The Java code string for the entire AST.
+	 */
 	public String toString() {
 		return root.toString();
 	}
