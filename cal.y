@@ -70,17 +70,17 @@ expression          : expression '+' expression
                     | VARIABLE '[' arrayIndex ']'
                     | value                                                 { $$ = $1; }
                     ;
-conditional         : expression condition expression                        { $$ = new ConditionalNode($1, $2, $3); }
-                    | expression condition expression logic conditional      { $$ = new ConditionalNode($1, $2, $3, $4, $5); }
-                    | NOT conditional                                        { $$ = new ConditionalNode($1, $2); }
+conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode($1, $2, $3)); }    /*conditional SDD not checked for errors*/
+                    | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode($1, $2, $3, $4, $5)); }
+                    | NOT conditional                                        { $$ = new CalVal(new ConditionalNode($2)); }
                     ;
-iteration           : IF '(' conditional ')' block
-                    | IF '(' conditional ')' block elseif
-                    | IF '(' conditional ')' block elseif ELSE block
-                    | IF '(' conditional ')' block ELSE block
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block
-                    | FOREACH '(' iterable IN iterables ')' block
-                    | WHILE '(' conditional ')' block
+iteration           : IF '(' conditional ')' block                           { $$ = new CalVal(new IterationNode($3, $5)); }        /*iteration SDD not checked for errors*/
+                    | IF '(' conditional ')' block elseif                    { $$ = new CalVal(new IterationNode($3, $5, $6)); }
+                    | IF '(' conditional ')' block elseif ELSE block         { $$ = new CalVal(new IterationNode($3, $5, $6, $8)); }
+                    | IF '(' conditional ')' block ELSE block                 { $$ = new CalVal(new IterationNode($3, $5, $7)); }
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationNode($3, $5, $7, $9)); }
+                    | FOREACH '(' iterable IN iterables ')' block              { $$ = new CalVal(new IterationNode($3, $5, $7)); }
+                    | WHILE '(' conditional ')' block                         { $$ = new CalVal(new IterationNode($3, $5)); }
                     ;
 gridDefinition      : GRID VARIABLE IS GRIDSIZE 
                     | VARIABLE IS gridtype
