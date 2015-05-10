@@ -29,17 +29,17 @@
       
 %%
 
-program             : statements                                            { $$ = new CalVal(new StatementsNode()); }
+program             : statements                                            { $$ = new CalVal(new StatementsNode()); } /* should be ProgramNode right? and do we need to declare this is root of AST? */
                     ;
-statements          : statement                                             { $$ = $1; } 
-                    | statement statements                                  { $$ = $1; }
+statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
+                    | statement statements                                  { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj, (StatementsNode)$2.obj)); }
                     ;
-statement           : headerStatement                                       { $$ = $1; }
-                    | variableStatement                                     { $$ = $1; }
-                    | functionStatement                                     { $$ = $1; }
-                    | continuation                                          { $$ = $1; }
-                    | expressionStatement                                   { $$ = $1; }
-                    | iteration                                             { $$ = $1; }
+statement           : headerStatement                                       { $$ = new CalVal(new StatementNode((HeaderStatementNode)$1.obj)); }
+                    | variableStatement                                     { $$ = new CalVal(new StatementNode((VariableStatementNode)$1.obj)); }
+                    | functionStatement                                     { $$ = new CalVal(new StatementNode((FunctionStatement)$1.obj)); }
+                    | continuation                                          { $$ = new CalVal(new StatementNode((ContinuationNode)$1.obj)); }
+                    | expressionStatement                                   { $$ = new CalVal(new StatementNode((ExpressionStatementNode)$1.obj)); }
+                    | iteration                                             { $$ = new CalVal(new StatementNode((IterationNode)$1.obj)); }
                     ;
 headerStatement     : gridDefinition                                        { $$ = new CalVal(new HeaderStatementNode((GridDefinitionNode)$1.obj)); }
                     | cellDefinition                                        { $$ = new CalVal(new HeaderStatementNode((CellDefinitionNode)$1.obj)); }
@@ -97,12 +97,10 @@ variableDefinition  : type VARIABLE '=' expression
                     | variable '=' functionCall
                     | variable assign expression
                     ;
-functionDeclaration : type VARIABLE '(' parameters ')' functionBlock {
-                        $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$5.obj));
-                    }
+functionDeclaration : type VARIABLE '(' parameters ')' functionBlock        { $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj)); }
                     ;
-functionCall        : VARIABLE '(' actuals ')'
-                    | RANDOM '(' randomActuals')'
+functionCall        : VARIABLE '(' actuals ')'                              { $$ = new CalVal(new FunctionCallNode($1.sval, (ActualsNode)$3.obj)); }
+                    | RANDOM '(' randomActuals')'                           { $$ = new CalVal(new FunctionCallNode((RandomActualsNode)$3.obj)); }
                     ;
 forStatement        : variableStatement                                     { $$ = new CalVal(new ForStatementNode((VariableStatementNode)$1.obj)); }
                     | variable INCREMENT                                    { $$ = new CalVal(new ForStatementNode((VariableNode)$1.obj, $2.sval)); }
