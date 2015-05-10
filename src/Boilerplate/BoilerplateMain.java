@@ -6,6 +6,7 @@ public class BoilerplateMain {
 	public int gridgy = /*insert value here */;
 
 	public ArrayList<LifeCALCell> cells = new ArrayList<LifeCALCell>();
+	public Random randCAL = new Random();
 
 	public LifeCAL() {
 		for (int i = 0; i < gridgx; i++)
