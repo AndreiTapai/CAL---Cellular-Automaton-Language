@@ -7,9 +7,6 @@ public class ExpressionNode extends AbstractNode {
 	private String sreturn;
 	private ExpressionNode exp1;
 	private ExpressionNode exp2;
-	private VariableNode var;
-	private ValueNode value;
-	private ArrayIndexNode aIndex;
 
 	public ExpressionNode(ExpressionNode e1, String s, ExpressionNode e2) {
 		exp1 = e1;
@@ -17,7 +14,7 @@ public class ExpressionNode extends AbstractNode {
 		if (s == "^") {
 			sreturn = "Math.pow(" + exp1.toJava() + ", " + exp2.toJava() + ")";
 		} else if (s == "FLOORDIVIDE") {
-			/* need type checking here ugh */
+			sreturn = "Math.floor(" + exp1.toJava() + ", " + exp2.toJava() + ")";
 		} else {
 			sreturn = exp1.toJava() + " " + s + " " + exp2.toJava();
 		}
@@ -31,29 +28,14 @@ public class ExpressionNode extends AbstractNode {
 		 */
 	}
 
-	public ExpressionNode(VariableNode v) {
-		var = v;
-		sreturn = var.toJava();
+	public ExpressionNode(String v) {
+		sreturn = v;
 	}
-
-	public ExpressionNode(VariableNode v, String s) {
-		var = v;
-		if (s == "++") {
-			sreturn = var.toJava() + "++";
-		} else if (s == "--") {
-			sreturn = var.toJava() + "--";
-		}
+	public ExpressionNode(double v) {
+		sreturn = String.valueOf(v);
 	}
-
-	public ExpressionNode(VariableNode v, ArrayIndexNode a) {
-		var = v;
-		aIndex = a;
-		sreturn = var.toJava() + "[" + aIndex.toJava() + "]";
-	}
-
-	public ExpressionNode(ValueNode v) {
-		value = v;
-		sreturn = value.toJava();
+	public ExpressionNode(int v) {
+		sreturn = String.valueOf(v);
 	}
 
 	@Override

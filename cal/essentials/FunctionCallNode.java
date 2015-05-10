@@ -4,12 +4,8 @@ public class FunctionCallNode extends AbstractNode {
 
 	private String sreturn;
 
-	public FunctionCallNode(String s, ActualsNode a) {
-		sreturn = s + "(" + a.toJava() + ")";
-	}
-
-	public FunctionCallNode(RandomActualsNode r) {
-		sreturn = "randCAL.random(" + r.toJava() + ")";
+	public FunctionCallNode(String name, String params) {
+		sreturn = name + "(" + params + ")";
 	}
 
 	@Override

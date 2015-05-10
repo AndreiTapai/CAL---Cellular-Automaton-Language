@@ -5,12 +5,11 @@ public class IterationStatementNode extends AbstractNode {
 	private String loopName;
 	private ConditionalNode cond;
 	private BlockNode block;
-	private ElseIfNode elseif;
+	private String elseif;
 	private BlockNode elseBlock;
-	private ForStatementNode forStmt1;
-	private ForStatementNode forStmt2;
-	private IterableNode iterable;
-	private IterablesNode iterables;
+	private String forStmt1;
+	private String forStmt2;
+	private String iteration;
 	String sreturn;
 
 	public IterationStatementNode(String s, ConditionalNode c, BlockNode b) {
@@ -24,13 +23,13 @@ public class IterationStatementNode extends AbstractNode {
 		sreturn += loopName + "(" + cond.toJava() + ")" + block.toJava();
 	}
 
-	public IterationStatementNode(ConditionalNode c, BlockNode b, ElseIfNode e) {
+	public IterationStatementNode(ConditionalNode c, BlockNode b, String e) {
 		loopName = "if";
 		cond = c;
 		block = b;
 		elseif = e;
 		sreturn += loopName + "(" + cond.toJava() + ")" + block.toJava()
-				+ elseif.toJava();
+				+ elseif;
 	}
 
 	public IterationStatementNode(ConditionalNode c, BlockNode b, BlockNode b2) {
@@ -42,7 +41,7 @@ public class IterationStatementNode extends AbstractNode {
 				+ "else" + elseBlock.toJava();
 	}
 
-	public IterationStatementNode(ConditionalNode c, BlockNode b, ElseIfNode e,
+	public IterationStatementNode(ConditionalNode c, BlockNode b, String e,
 			BlockNode b2) {
 		loopName = "if";
 		cond = c;
@@ -50,26 +49,25 @@ public class IterationStatementNode extends AbstractNode {
 		elseif = e;
 		elseBlock = b2;
 		sreturn += loopName + "(" + cond.toJava() + ")" + block.toJava()
-				+ elseif.toJava() + "else" + elseBlock.toJava();
+				+ elseif + "else" + elseBlock.toJava();
 	}
 
-	public IterationStatementNode(ForStatementNode fs1, ConditionalNode c,
-			ForStatementNode fs2, BlockNode b) {
+	public IterationStatementNode(String fs1, ConditionalNode c,
+			String fs2, BlockNode b) {
 		loopName = "for";
 		forStmt1 = fs1;
 		cond = c;
 		forStmt2 = fs2;
 		block = b;
-		sreturn += loopName + "(" + forStmt1.toJava() + "; " + cond.toJava()
-				+ "; " + forStmt2.toJava() + ")" + block.toJava();
+		sreturn += loopName + "(" + forStmt1 + "; " + cond.toJava()
+				+ "; " + forStmt2 + ")" + block.toJava();
 	}
 
-	public IterationStatementNode(IterableNode it, IterablesNode its, BlockNode b) {
+	public IterationStatementNode(String iteration, BlockNode b) {
+		this.iteration = iteration;
 		loopName = "for";
-		iterable = it;
-		iterables = its;
 		block = b;
-		sreturn += loopName + "(" + it.toJava() + " : " + its.toJava() + ")"
+		sreturn += loopName + "(" + iteration + ")"
 				+ block.toJava();
 	}
 

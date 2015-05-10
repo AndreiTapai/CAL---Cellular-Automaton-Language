@@ -18,7 +18,7 @@ public class StatementNode extends AbstractNode {
 	public StatementNode(ExpressionStatementNode node) {
 		sreturn = node.toJava();
 	}
-	public StatementNode(IterationNode node) {
+	public StatementNode(IterationStatementNode node) {
 		sreturn = node.toJava();
 	}
 

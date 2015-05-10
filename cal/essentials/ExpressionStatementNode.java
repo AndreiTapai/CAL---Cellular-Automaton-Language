@@ -3,26 +3,9 @@ package cal.essentials;
 public class ExpressionStatementNode extends AbstractNode {
 
 	private String sreturn;
-	private VariableNode var;
-	private ValueNode value;
 
-	public ExpressionStatementNode(VariableNode v) {
-		var = v;
-		sreturn = var.toJava();
-	}
-
-	public ExpressionStatementNode(VariableNode v, String s) {
-		var = v;
-		if (s == "++") {
-			sreturn = var.toJava() + "++;\n";
-		} else if (s == "--") {
-			sreturn = var.toJava() + "--;\n";
-		}
-	}
-
-	public ExpressionStatementNode(ValueNode v) {
-		value = v;
-		sreturn = value.toJava();
+	public ExpressionStatementNode(String expression) {
+		sreturn = expression + ';';
 	}
 
 	@Override
