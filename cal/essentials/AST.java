@@ -8,14 +8,17 @@ public class AST {
 		root = node;
 	}
 
-	public Node addNode(AbstractNode node) {
-		if (root.left == null)
-			root.left = node;
-		else if (root.right == null)
-			root.right = node;
+	public void addNode(AbstractNode node) {
+		if (root.getLeft() == null)
+			root.setLeft(node);
+		else if (root.getRight() == null)
+			root.setRight(node);
 
-		addNode(root.left);
-		addNode(root.right);
+		addNode(root.getLeft());
+		addNode(root.getRight());
 	}
-
+	
+	public String toString() {
+		return root.toString();
+	}
 }

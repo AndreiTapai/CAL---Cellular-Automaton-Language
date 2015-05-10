@@ -6,8 +6,8 @@ public class Utils {
 	/**
 	 * Writes a string to the specified file.
 	 * 
-	 * @param filename
-	 * @param s
+	 * @param filename The name of the file to write to.
+	 * @param s The string to write.
 	 */
 	public static void write(String filename, String s) {
 		try {
@@ -28,8 +28,8 @@ public class Utils {
 	/**
 	 * Appends a string to the specified file.
 	 * 
-	 * @param filename
-	 * @param s
+	 * @param filename The name of the file to write to.
+	 * @param s The string to write.
 	 */
 	public static void append(String filename, String s) {
 		try {
