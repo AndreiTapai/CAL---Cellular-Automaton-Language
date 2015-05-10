@@ -51,7 +51,7 @@ continuation        : CONTINUE                                              { $$
 expressionStatement : variable                                              { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj)); }
                     | variable INCREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
                     | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
-                    | value                                                 { $$ = new CalVal(new ExpressionStatementNode((ValueNode)$1.obj)); }
+                    | value                                                 { $$ = new CalVal(new ExpressionStatementNode($1)); }
                     ;
 expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
                     | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
@@ -63,7 +63,7 @@ expression          : expression '+' expression                              { $
                     | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
                     | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
                     | variable '[' arrayIndex ']'                            { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, (ArrayIndexNode)$3.obj)); }
-                    | value                                                  { $$ = new CalVal(new ExpressionNode((ValueNode)$1.obj)); }
+                    | value                                                  { $$ = new CalVal(new ExpressionNode($1)); }
                     ;
 conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj)); }
                     | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode) $1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
@@ -80,11 +80,11 @@ iteration           : IF '(' conditional ')' block                              
 gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
                     | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $3, false)); }
                     ;
-cellDefinition      : CELLS HAVE VARIABLE                                    { $$ = new CalVal(new CellDefinitionNode($3.sval)); }
-                    | CELLS HAVE LIFE                                        { $$ = new CalVal(new CellDefinitionNode($3.sval)); }
+cellDefinition      : CELLS HAVE VARIABLE                                   { $$ = new CalVal(new CellDefinitionNode($3.sval)); }
+                    | CELLS HAVE LIFE                                       { $$ = new CalVal(new CellDefinitionNode($3.sval)); }
                     ;
-variableDeclaration : type VARIABLE 
-                    | type '[' INTEGERVAL ']' VARIABLE
+variableDeclaration : type VARIABLE                                         { $$ = new CalVal(new VariableDeclarationNode($1+$2.sval)); }
+                    | type '[' INTEGERVAL ']' VARIABLE                      { $$ = new CalVal(new VariableDeclarationNode($1+$2+$3.sval+$4+$5.sval)); }
                     ;                   
 variableDefinition  : type VARIABLE '=' expression
                     | VARIABLE '[' arrayIndex ']' '=' expression 
@@ -127,20 +127,20 @@ iterable            : CELL
 iterables           : CELLS
                     | NEIGHBORS
                     ;
-type                : INTEGER
-                    | FLOAT
-                    | BOOLEAN
-                    | CHARACTER
-                    | STRING
-                    | VOID
-                    | NEIGHBOR
+type                : INTEGER                                               { $$ = $1.sval; }
+                    | FLOAT                                                 { $$ = $1.sval; }
+                    | BOOLEAN                                               { $$ = $1.sval; }
+                    | CHARACTER                                             { $$ = $1.sval; }
+                    | STRING                                                { $$ = $1.sval; }
+                    | VOID                                                  { $$ = $1.sval; }
+                    | NEIGHBOR                                              { $$ = $1.sval; }
                     ;
-value               : INTEGERVAL
-                    | FLOATVAL
-                    | TRUE
-                    | FALSE
-                    | CHARACTERVAL
-                    | STRINGVAL
+value               : INTEGERVAL                                            { $$ = $1.ival; }
+                    | FLOATVAL                                              { $$ = $1.dval; }
+                    | TRUE                                                  { $$ = $1.sval; }
+                    | FALSE                                                 { $$ = $1.sval; }
+                    | CHARACTERVAL                                          { $$ = $1.sval; }
+                    | STRINGVAL                                             { $$ = $1.sval; }c
                     ;
 assign              : ADDEQUAL
                     | SUBTRACTEQUAL
@@ -149,22 +149,22 @@ assign              : ADDEQUAL
                     | MODULOEQUAL
                     | FLOOREQUAL
                     ;
-condition           : EQUALS                        { $$ = new CalVal(new ConditionNode($1.sval)); }
-                    | GREATER                       { $$ = new CalVal(new ConditionNode($1.sval)); }
-                    | GREATEREQUALS                 { $$ = new CalVal(new ConditionNode($1.sval)); }
-                    | LESS                          { $$ = new CalVal(new ConditionNode($1.sval)); }
-                    | LESSEQUALS                    { $$ = new CalVal(new ConditionNode($1.sval)); }
-                    | NOTEQUALS                     { $$ = new CalVal(new ConditionNode($1.sval)); }
+condition           : EQUALS
+                    | GREATER
+                    | GREATEREQUALS
+                    | LESS
+                    | LESSEQUALS
+                    | NOTEQUALS
                     ;
-logic               : AND                      { $$ = new CalVal(new LogicNode($1.sval)); }
-                    | OR                       { $$ = new CalVal(new LogicNode($1.sval)); }
-                    | NOR                      { $$ = new CalVal(new LogicNode($1.sval)); }
-                    | NAND                     { $$ = new CalVal(new LogicNode($1.sval)); }
-                    | XOR                      { $$ = new CalVal(new LogicNode($1.sval)); }
+logic               : AND
+                    | OR
+                    | NOR
+                    | NAND
+                    | XOR
                     ;
-block               : '|' statements '|'           { $$ = new CalVal(new BlockNode((StatementsNode)$2.obj)); }
-                    | statement                    { $$ = new CalVal(new BlockNode((StatementNode)$1.obj)); }
-                    | '|' '|'                      { $$ = new CalVal(new BlockNode()); }
+block               : '|' statements '|'
+                    | statement
+                    | '|' '|'
                     ;
 functionBlock       : '|' statements return '|'     { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj, (ReturnsNode)$3.obj)); }
                     | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((ReturnsNode)$2.obj)); }
