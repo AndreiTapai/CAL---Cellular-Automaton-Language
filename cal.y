@@ -70,17 +70,17 @@ expression          : expression '+' expression
                     | VARIABLE '[' arrayIndex ']'
                     | value                                                 { $$ = $1; }
                     ;
-conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode($1, $2, $3)); }    /*conditional SDD not checked for errors*/
-                    | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode($1, $2, $3, $4, $5)); }
-                    | NOT conditional                                        { $$ = new CalVal(new ConditionalNode($2)); }
+conditional         : expression condition expression                        
+                    | expression condition expression logic conditional      
+                    | NOT conditional                                        
                     ;
-iteration           : IF '(' conditional ')' block                           { $$ = new CalVal(new IterationNode($3, $5)); }        /*iteration SDD not checked for errors*/
-                    | IF '(' conditional ')' block elseif                    { $$ = new CalVal(new IterationNode($3, $5, $6)); }
-                    | IF '(' conditional ')' block elseif ELSE block         { $$ = new CalVal(new IterationNode($3, $5, $6, $8)); }
-                    | IF '(' conditional ')' block ELSE block                 { $$ = new CalVal(new IterationNode($3, $5, $7)); }
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationNode($3, $5, $7, $9)); }
-                    | FOREACH '(' iterable IN iterables ')' block              { $$ = new CalVal(new IterationNode($3, $5, $7)); }
-                    | WHILE '(' conditional ')' block                         { $$ = new CalVal(new IterationNode($3, $5)); }
+iteration           : IF '(' conditional ')' block                           
+                    | IF '(' conditional ')' block elseif                    
+                    | IF '(' conditional ')' block elseif ELSE block       
+                    | IF '(' conditional ')' block ELSE block                 
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    
+                    | FOREACH '(' iterable IN iterables ')' block             
+                    | WHILE '(' conditional ')' block                        
                     ;
 gridDefinition      : GRID VARIABLE IS GRIDSIZE 
                     | VARIABLE IS gridtype
@@ -98,7 +98,8 @@ variableDefinition  : type VARIABLE '=' expression
                     | variable assign expression
                     ;
 functionDeclaration : type VARIABLE '(' parameters ')' functionBlock {
-                        $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$5.obj));
+                        $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj));
+                        System.out.println(((FunctionDeclarationNode)$$.obj).toString());
                     }
                     ;
 functionCall        : VARIABLE '(' actuals ')'
@@ -172,7 +173,7 @@ block               : '|' statements '|'
                     | '|' '|'
                     ;
 functionBlock       : '|' statements return '|'     { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj, (ReturnsNode)$3.obj)); }
-                    | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
+                    | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((ReturnsNode)$2.obj)); }
                     | '|' statements'|'             { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
                     | '|' '|'                       { $$ = new CalVal(new FunctionBlockNode()); }
                     ;
@@ -181,7 +182,7 @@ return              : RETURN value                  { $$ = new CalVal(new Return
                     ;
 parameters          :                               { $$ = new CalVal(new ParametersNode()); }
                     | type VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
-                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, $3.sval)); }
+                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, ((ParametersNode)$4.obj).baseParams)); }
                     | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     ;
 actuals             : variable
