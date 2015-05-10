@@ -1,0 +1,28 @@
+package cal.essentials;
+import java.util.ArrayList;
+import java.util.List;
+
+public class IterationNode extends AbstractNode{
+
+    List <AbstractNode> children = new ArrayList<AbstractNode>();
+    
+    public IterationNode(Object... args){
+    
+        for (Object o : args){
+            if (o.getClass().getName() == "AbstractNode"){
+                children.add(o);
+            }
+        }
+    }
+    
+    public String toString(){
+    
+        String s = "";
+        for (AbstractNode n : children){
+            s += n.toString();
+        }
+        
+        return s;
+    }
+ 
+}
