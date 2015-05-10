@@ -1,11 +1,12 @@
 %{
-  import java.io.*;
-  import cal.essentials.AbstractNode;
-  import cal.essentials.FunctionDeclarationNode;
-    import cal.essentials.FunctionBlockNode;
-  import cal.essentials.ParametersNode;
-  import cal.essentials.ReturnsNode;
-  import cal.essentials.StatementsNode;
+import java.io.*;
+import cal.essentials.AbstractNode;
+import cal.essentials.FunctionDeclarationNode;
+import cal.essentials.FunctionBlockNode;
+import cal.essentials.ParametersNode;
+import cal.essentials.ReturnsNode;
+import cal.essentials.StatementsNode;
+import cal.essentials.StatementNode;
 %}
 
 %token INTEGERVAL FLOATVAL CHARACTERVAL STRINGVAL TRUE FALSE GRIDSIZE     
@@ -29,10 +30,10 @@
       
 %%
 
-program             : statements                                            { $$ = new CalVal(new StatementsNode()); }
+program             : statements                                            { $$ = $1; }
                     ;
-statements          : statement                                             { $$ = $1; } 
-                    | statement statements                                  { $$ = $1; }
+statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
+                    | statement statements                                  { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
                     ;
 statement           : headerStatement                                       { $$ = $1; }
                     | variableStatement                                     { $$ = $1; }
@@ -182,7 +183,7 @@ return              : RETURN value                  { $$ = new CalVal(new Return
                     ;
 parameters          :                               { $$ = new CalVal(new ParametersNode()); }
                     | type VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
-                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, ((ParametersNode)$4.obj).baseParams)); }
+                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, ((ParametersNode)$4.obj).params)); }
                     | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     ;
 actuals             : variable

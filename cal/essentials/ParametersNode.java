@@ -3,27 +3,28 @@ import java.util.ArrayList;
 
 public class ParametersNode extends AbstractNode{
 
-	private ArrayList<ArrayList<String>> params;
-	public String[] baseParams;
+	public ArrayList<ArrayList<String>> params;
 
-	public ParametersNode(String type, String name, String[]...args){
-		params = new ArrayList<ArrayList<String>>(2);
+	public ParametersNode(String type, String name, ArrayList<ArrayList<String>> params){
+		this.params = new ArrayList<ArrayList<String>>(2);
 		ArrayList<String> types = new ArrayList<String>();
 		ArrayList<String> names = new ArrayList<String>();
-		baseParams = new String[2];
-		baseParams[0] = type;
-		baseParams[1] = name;
-		params.add(types);
-		params.add(names);
+		this.params.add(types);
+		this.params.add(names);
 
 		if(type != null && name != null){
-			params.get(0).add(type);
-			params.get(1).add(name);
+			this.params.get(0).add(type);
+			this.params.get(1).add(name);
 		}
-		for(String[] arg : args){
-			params.get(0).add(arg[0]);
-			params.get(1).add(arg[1]);
-		}
+		if(params == null)
+			return;
+		for(String param : params.get(0))
+			this.params.get(0).add(param);
+		for(String param : params.get(1))
+			this.params.get(1).add(param);
+	}
+	public ParametersNode(String type, String name){
+		this(type, name, null);
 	}
 	public ParametersNode(){
 		this(null, null);
