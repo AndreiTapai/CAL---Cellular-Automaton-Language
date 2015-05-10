@@ -1,0 +1,24 @@
+package cal.essentials;
+
+public class ForStatementNode extends AbstractNode{
+
+	private String sreturn;
+	private VariableStatementNode varStmt;
+	private VariableNode var;
+	
+	public ForStatementNode(VariableStatementNode vs){
+		varStmt = vs;
+		sreturn = vs.toJava();
+	}
+	
+	public ForStatementNode(VariableNode v, String s){
+		var = v;
+		if (s == "INCREMENT"){
+			sreturn = v.toJava() + "++";
+		}
+		else if (s == "DECREMENT"){
+			sreturn = v.toJava() + "--";
+		}
+	}
+	
+}
