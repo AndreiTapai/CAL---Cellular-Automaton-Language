@@ -30,9 +30,9 @@ public class ConditionalNode extends AbstractNode {
 	 * More complex constructor. Includes NAND/NOR operators, allowing for
 	 * chaining of conditional expressions operated on by ANDs/ORs.
 	 * 
-	 * @param e1 First boolean expression.
+	 * @param e1 First expression.
 	 * @param c1 First conditional operator.
-	 * @param e2 Second boolean expression.
+	 * @param e2 Second expression.
 	 * @param l Logical operator (NAND or NOR).
 	 * @param c2 Other conditional statement.
 	 */
