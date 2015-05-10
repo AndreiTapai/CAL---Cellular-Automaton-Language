@@ -163,7 +163,7 @@ block               : '|' statements '|'           { $$ = new CalVal(new BlockNo
                     | '|' '|'                      { $$ = new CalVal(new BlockNode()); }
                     ;
 functionBlock       : '|' statements return '|'     { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj, (ReturnsNode)$3.obj)); }
-                    | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
+                    | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((ReturnsNode)$2.obj)); }
                     | '|' statements'|'             { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
                     | '|' '|'                       { $$ = new CalVal(new FunctionBlockNode()); }
                     ;
@@ -172,7 +172,7 @@ return              : RETURN value                  { $$ = new CalVal(new Return
                     ;
 parameters          :                               { $$ = new CalVal(new ParametersNode()); }
                     | type VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
-                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, $3.sval)); }
+                    | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, (ParametersNode)$3.obj)); }
                     | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     ;
 actuals             : variable
