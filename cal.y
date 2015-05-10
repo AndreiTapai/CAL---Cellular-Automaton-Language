@@ -80,8 +80,8 @@ iteration           : IF '(' conditional ')' block                              
 gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
                     | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $3, false)); }
                     ;
-cellDefinition      : CELLS HAVE VARIABLE
-                    | CELLS HAVE LIFE
+cellDefinition      : CELLS HAVE VARIABLE                                    { $$ = new CalVal(new CellDefinitionNode($3.sval)); }
+                    | CELLS HAVE LIFE                                        { $$ = new CalVal(new CellDefinitionNode($3.sval)); }
                     ;
 variableDeclaration : type VARIABLE 
                     | type '[' INTEGERVAL ']' VARIABLE
