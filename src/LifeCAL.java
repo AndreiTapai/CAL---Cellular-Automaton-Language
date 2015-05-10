@@ -10,15 +10,15 @@ public class LifeCAL {
 	public int gridgx = 50;
 	public int gridgy = 50;
 
-	public ArrayList<LifeCALCell> cells = new ArrayList<LifeCALCell>();
+	public ArrayList<Cell> cells = new ArrayList<Cell>();
 
 	public LifeCAL() {
 		for (int i = 0; i < gridgx; i++)
 			for (int j = 0; j < gridgy; j++) {
-				cells.add(new LifeCALCell(i, j));
+				cells.add(new Cell(i, j));
 			}
 
-		for (LifeCALCell cell : cells) {
+		for (Cell cell : cells) {
 			System.out.println("Initial Cell: " + cell.x + ", " + cell.y);
 			if (cell.x > 0)
 				cell.addNeighbors(getNeighbors(cell.x - 1, cell.y));
@@ -40,19 +40,19 @@ public class LifeCAL {
 		}
 	}
 
-	public LifeCALCell getNeighbors(int x, int y) {
+	public Cell getNeighbors(int x, int y) {
 		for (int i = 0; i < cells.size(); i++)
 			if (cells.get(i).x == x && cells.get(i).y == y) {
 				System.out.println("Neighbor: " + cells.get(i).x + ", "
 						+ cells.get(i).y);
-				return (LifeCALCell) cells.get(i);
+				return (Cell) cells.get(i);
 			}
 		return null; // Shouldn't be reachable
 	}
 
-	public int num_live_neighbors(LifeCALCell c) {
+	public int num_live_neighbors(Cell c) {
 		int live = 0;
-		for (LifeCALCell cell : c.neighbors) {
+		for (Cell cell : c.neighbors) {
 			if (cell.life == true) {
 				live++;
 			}
@@ -69,7 +69,7 @@ public class LifeCAL {
 			ctemp[i] = cells.get(i).life;
 		}
 
-		for (LifeCALCell c : cells) {
+		for (Cell c : cells) {
 			liveneighbors = num_live_neighbors(c);
 
 			if (c.life == true && liveneighbors < 2) {
@@ -85,5 +85,25 @@ public class LifeCAL {
 		for (int i = 0; i < cells.size(); i++) {
 			cells.get(i).life = ctemp[i];
 		}
+	}
+	
+	public class Cell {
+
+		public int x;
+		public int y;
+		public boolean life;
+		public ArrayList<Cell> neighbors = new ArrayList<Cell>();
+
+		public Cell(int x, int y) {
+			this.x = x;
+			this.y = y;
+			java.util.Random r = new java.util.Random();
+			life = r.nextBoolean();
+		}
+
+		public void addNeighbors(Cell c) {
+			this.neighbors.add(c);
+		}
+
 	}
 }
