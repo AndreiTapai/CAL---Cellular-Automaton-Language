@@ -177,8 +177,8 @@ parameters          :                               { $$ = new CalVal(new Parame
                     | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, (ParametersNode)$3.obj)); }
                     | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     ;
-actuals             : variable
-                    | variable ',' actuals
+actuals             : variable                      { $$ = new CalVal(new ActualsNode((VariableNode)$1.obj)); }
+                    | variable ',' actuals          { $$ = new CalVal(new ActualsNode((VariableNode)$1.obj, (ActualsNode)$3.obj)); }
                     ;
 randomActuals       : 
                     | value
