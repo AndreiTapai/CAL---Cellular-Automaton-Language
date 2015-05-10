@@ -1,32 +1,35 @@
 package cal.essentials;
 
-public class LogicNode extends AbstractNode{
+public class LogicNode extends AbstractNode {
 
 	private String sreturn;
 	private String logicOp;
-	
-	public LogicNode(String s){
+
+	public LogicNode(String s) {
 		logicOp = s;
-		if (s == "AND"){
+		if (s == "AND") {
 			sreturn = " && ";
 		}
-		if (s == "OR"){
+		if (s == "OR") {
 			sreturn = " || ";
 		}
-		if (s == "XOR"){
+		if (s == "XOR") {
 			sreturn = " ^ ";
 		}
-        /*NAND and NOR handled by function which calls them--they require different syntax than just converting to a given symbol*/
+		/*
+		 * NAND and NOR handled by function which calls them--they require
+		 * different syntax than just converting to a given symbol
+		 */
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return logicOp;
 	}
-	
+
 	@Override
-	public String toJava(){
+	public String toJava() {
 		return sreturn;
 	}
-	
+
 }

@@ -30,7 +30,7 @@ public class CAL_GUI {
 
 	ArrayList<?> cellList;
 	Field life;
-        Field neighbors;
+	Field neighbors;
 	ArrayList<Rectangle> referenceList;
 	boolean listChanged;
 	boolean isFirstPass;
@@ -179,7 +179,7 @@ public class CAL_GUI {
 
 		try {
 			life = cellclass.getDeclaredField("life");
-                        neighbors = cellclass.getDeclaredField("neighbors");
+			neighbors = cellclass.getDeclaredField("neighbors");
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,16 +1,14 @@
 package cal.essentials;
 
-public class StatementNode extends AbstractNode{
+public class StatementNode extends AbstractNode {
 
-	
-	public StatementNode(StatementNode... nodes){
+	public StatementNode(StatementNode... nodes) {
 
 	}
 
-	@Override 
-	public String toJava(){
-		return ";\n" ;
+	@Override
+	public String toJava() {
+		return ";\n";
 	}
-
 
 }

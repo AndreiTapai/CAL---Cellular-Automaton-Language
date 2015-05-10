@@ -1,11 +1,9 @@
 package cal.essentials;
 
-public class Node{
-	
+public class Node {
 
-	public Node(Object... args){
-		
+	public Node(Object... args) {
+
 	}
-
 
 }
