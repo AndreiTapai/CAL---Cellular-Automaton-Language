@@ -8,16 +8,16 @@ public class ForStatementNode extends AbstractNode{
 	
 	public ForStatementNode(VariableStatementNode vs){
 		varStmt = vs;
-		sreturn = vs.toJava();
+		sreturn = varStmt.toJava();
 	}
 	
 	public ForStatementNode(VariableNode v, String s){
 		var = v;
 		if (s == "INCREMENT"){
-			sreturn = v.toJava() + "++";
+			sreturn = var.toJava() + "++";
 		}
 		else if (s == "DECREMENT"){
-			sreturn = v.toJava() + "--";
+			sreturn = var.toJava() + "--";
 		}
 	}
 	
