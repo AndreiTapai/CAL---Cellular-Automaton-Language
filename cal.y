@@ -92,19 +92,17 @@ variableDefinition  : type VARIABLE '=' expression
                     | variable '=' functionCall
                     | variable assign expression
                     ;
-functionDeclaration : type VARIABLE '(' parameters ')' functionBlock {
-                        $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj));
-                    }
+functionDeclaration : type VARIABLE '(' parameters ')' functionBlock        { $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj)); }
                     ;
-functionCall        : VARIABLE '(' actuals ')'
-                    | RANDOM '(' randomActuals')'
+functionCall        : VARIABLE '(' actuals ')'                              { $$ = new CalVal(new FunctionCallNode($1.sval, (ActualsNode)$3.obj)); }
+                    | RANDOM '(' randomActuals')'                           { $$ = new CalVal(new FunctionCallNode((RandomActualsNode)$3.obj)); }
                     ;
-forStatement        : variableStatement                                     { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
+forStatement        : variableStatement                                     { $$ = new CalVal(new ForStatementNode((VariableStatementNode)$1.obj)); }
+                    | variable INCREMENT                                    { $$ = new CalVal(new ForStatementNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable DECREMENT                                    { $$ = new CalVal(new ForStatementNode((VariableNode)$1.obj, $2.sval)); }
                     ;
-elseif              : ELSEIF '(' conditional ')' block %prec IF
-                    | ELSEIF '(' conditional ')' block elseif
+elseif              : ELSEIF '(' conditional ')' block %prec IF                { $$ = new CalVal(new ElseIfNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
+                    | ELSEIF '(' conditional ')' block elseif                  { $$ = new CalVal(new ElseIfNode(ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj)); }
                     ;
 variable            : VARIABLE
                     | CELL
