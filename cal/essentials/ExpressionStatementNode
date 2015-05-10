@@ -8,22 +8,22 @@ public class ExpressionStatementNode extends AbstractNode{
 	
 	public ExpressionStatementNode(VariableNode v){
 		var = v;
-		sreturn = v.toJava();
+		sreturn = var.toJava();
 	}
 	
 	public ExpressionStatementNode(VariableNode v, String s){
 		var = v;
 		if (s == "INCREMENT"){
-			sreturn = v.toJava() + "++";
+			sreturn = var.toJava() + "++";
 		}
 		else if (s == "DECREMENT"){
-			sreturn = v.toJava() + "--";
+			sreturn = var.toJava() + "--";
 		}
 	}
 	
 	public ExpressionStatementNode(ValueNode v){
 		value = v;
-		sreturn = v.toJava();
+		sreturn = value.toJava();
 	}
 	
 	@Override
