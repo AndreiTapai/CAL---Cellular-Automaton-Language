@@ -24,10 +24,10 @@ public class ConditionalNode extends AbstractNode{
 		exp2 = e2;
 		logic = l;
 		conditional = c2;
-		if (logic.toString() == "nand"){
+		if (logic.toString() == "NAND"){
 			sreturn = "!(" + exp1.toJava() + cond.toJava() + exp2.toJava() + " && " + conditional.toJava() + ")";
 		}
-		else if (logic.toString() == "nor"){
+		else if (logic.toString() == "NOR"){
 			sreturn = "!(" + exp1.toJava() + cond.toJava() + exp2.toJava() + " || " + conditional.toJava() + ")";
 		}
 		else{
