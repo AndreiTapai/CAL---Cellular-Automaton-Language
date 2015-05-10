@@ -65,9 +65,9 @@ expression          : expression '+' expression
                     | VARIABLE '[' arrayIndex ']'
                     | value                                                 { $$ = $1; }
                     ;
-conditional         : expression condition expression
-                    | expression condition expression logic conditional
-                    | NOT conditional
+conditional         : expression condition expression                        { $$ = new ConditionalNode($1, $2, $3); }
+                    | expression condition expression logic conditional      { $$ = new ConditionalNode($1, $2, $3, $4, $5); }
+                    | NOT conditional                                        { $$ = new ConditionalNode($1, $2); }
                     ;
 iteration           : IF '(' conditional ')' block
                     | IF '(' conditional ')' block elseif
