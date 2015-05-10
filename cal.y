@@ -58,11 +58,11 @@ expressionStatement : variable                                              { $$
                     | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
                     | value                                                 { $$ = new CalVal(new ExpressionStatementNode((ValueNode)$1.obj)); }
                     ;
-expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
+                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
                     | expression FLOORDIVIDE expression                      { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
                     | variable                                               { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj)); }
                     | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
