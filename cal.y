@@ -23,7 +23,7 @@ import cal.essentials.*;
 %right ADDEQUAL SUBTRACTEQUAL MULTIPLYEQUAL DIVIDEEQUAL MODULOEQUAL FLOOREQUAL
       
 %%
-program             : statements                                            { root = new AbstractNode($1.obj); }
+program             : statements                                            { root = new AbstractNode((StatementsNode)$1.obj); }
 statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
                     | statement statements  { 
                         $$ = new CalVal(new StatementsNode((StatementNode)$1.obj, ((StatementsNode)$2.obj).statements));
@@ -31,7 +31,7 @@ statements          : statement                                             { $$
                     ;
 statement           : headerStatement                                       { $$ = new CalVal(new StatementNode((HeaderStatementNode)$1.obj)); }
                     | variableStatement                                     { $$ = new CalVal(new StatementNode((VariableStatementNode)$1.obj)); }
-                    | functionStatement                                     { $$ = new CalVal(new StatementNode((FunctionStatement)$1.obj)); }
+                    | functionStatement                                     { $$ = new CalVal(new StatementNode((FunctionStatementNode)$1.obj)); }
                     | continuation                                          { $$ = new CalVal(new StatementNode((ContinuationNode)$1.obj)); }
                     | expressionStatement                                   { $$ = new CalVal(new StatementNode((ExpressionStatementNode)$1.obj)); }
                     | iteration                                             { $$ = new CalVal(new StatementNode((IterationNode)$1.obj)); }
@@ -78,7 +78,7 @@ iteration           : IF '(' conditional ')' block                              
                     | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
                     ;
 gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
-                    | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $4, false)); }
+                    | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $3, false)); }
                     ;
 cellDefinition      : CELLS HAVE VARIABLE
                     | CELLS HAVE LIFE
@@ -198,6 +198,7 @@ gridtype            : TRIANGULAR
 %%
 private Yylex lexer;
 private int lineno = 0;
+private AbstractNode root;
 
 private int yylex () {
   int yyl_return = -1;

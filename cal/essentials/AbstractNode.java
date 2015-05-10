@@ -8,7 +8,7 @@ public class AbstractNode {
 
 	String sval = "";
 
-	public AbstractNode(Object... args) {
+	public AbstractNode(StatementsNode node) {
 		children = new ArrayList<AbstractNode>();
 	}
 
