@@ -21,7 +21,7 @@ public class ConditionalNode extends AbstractNode {
 			ExpressionNode e2, LogicNode l, ConditionalNode c2) {
 
 		exp1 = e1;
-		cond = c;
+		cond = c1;
 		exp2 = e2;
 		logic = l;
 		conditional = c2;
