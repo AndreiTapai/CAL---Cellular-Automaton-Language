@@ -5,8 +5,8 @@ import java.util.ArrayList;
  * @author Andrei
  */
 public class LifeCAL {
-	public int gridgx = 25;
-	public int gridgy = 25;
+	public int gridgx = 50;
+	public int gridgy = 50;
 
 	public ArrayList<LifeCALCell> cells = new ArrayList<LifeCALCell>();
 

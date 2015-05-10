@@ -26,7 +26,7 @@ public class CAL_GUI {
 	int cellWidth = 0;
 	int cellHeight = 0;
 
-	static final int topPadding = 40;
+	static final int padding = 40;
 
 	ArrayList<?> cellList;
 	Field life;
@@ -116,7 +116,7 @@ public class CAL_GUI {
 			int x1, y1, x2, y2;
 
 			x1 = (windowWidth - boardSize) / 2;
-			y1 = topPadding;
+			y1 = padding;
 			x2 = x1 + boardSize;
 			y2 = y1 + boardSize;
 
@@ -133,8 +133,8 @@ public class CAL_GUI {
 				}
 			}
 
-			int xOffset = (x2 - (numYCells * cellHeight) + topPadding + 10) / 2;
-			int yOffset = (y2 - (numXCells * cellWidth) + topPadding) / 2;
+			int xOffset = (x2 - (numYCells * cellHeight) + padding + 10) / 2;
+			int yOffset = (y2 - (numXCells * cellWidth) + padding) / 2;
 
 			g2.setPaint(new Color(255, 255, 255));
 			g2.fillRect(x1, y1, x2 - x1, y2 - y1);
