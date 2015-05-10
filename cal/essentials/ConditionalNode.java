@@ -39,7 +39,7 @@ public class ConditionalNode extends AbstractNode {
 
 	public ConditionalNode(ConditionalNode c) {
 		conditional = c;
-		sreturn = "!{" + conditional.toJava + ")";
+		sreturn = "!{" + conditional.toJava() + ")";
 	}
 
 	@Override

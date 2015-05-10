@@ -14,9 +14,9 @@ public class ExpressionStatementNode extends AbstractNode {
 	public ExpressionStatementNode(VariableNode v, String s) {
 		var = v;
 		if (s == "++") {
-			sreturn = var.toJava() + "++";
+			sreturn = var.toJava() + "++;\n";
 		} else if (s == "--") {
-			sreturn = var.toJava() + "--";
+			sreturn = var.toJava() + "--;\n";
 		}
 	}
 

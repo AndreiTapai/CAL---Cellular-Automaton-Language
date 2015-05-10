@@ -32,7 +32,7 @@ statements          : statement                                             { $$
 statement           : headerStatement                                       { $$ = new CalVal(new StatementNode((HeaderStatementNode)$1.obj)); }
                     | variableStatement                                     { $$ = new CalVal(new StatementNode((VariableStatementNode)$1.obj)); }
                     | functionStatement                                     { $$ = new CalVal(new StatementNode((FunctionStatementNode)$1.obj)); }
-                    | continuation                                          { $$ = new CalVal(new StatementNode((ContinuationNode)$1.obj)); }
+                    | continuation                                          { $$ = new CalVal(new StatementNode($1)); }
                     | expressionStatement                                   { $$ = new CalVal(new StatementNode((ExpressionStatementNode)$1.obj)); }
                     | iteration                                             { $$ = new CalVal(new StatementNode((IterationNode)$1.obj)); }
                     ;
@@ -45,12 +45,12 @@ variableStatement   : variableDeclaration                                   { $$
 functionStatement   : functionDeclaration                                   { $$ = new CalVal(new FunctionStatementNode((FunctionDeclarationNode)$1.obj)); }
                     | functionCall                                          { $$ = new CalVal(new FunctionStatementNode((FunctionCallNode)$1.obj)); }
                     ;
-continuation        : CONTINUE                                              { $$ = new CalVal(new ContinuationNode($1.sval)); }
-                    | BREAK                                                 { $$ = new CalVal(new ContinuationNode($1.sval)); }
+continuation        : CONTINUE                                              { $$ = $1.sval; }
+                    | BREAK                                                 { $$ = $1.sval; }
                     ;
-expressionStatement : variable                                              { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj)); }
-                    | variable INCREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
-                    | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
+expressionStatement : variable                                              { $$ = new CalVal(new ExpressionStatementNode($1)); }
+                    | variable INCREMENT                                    { $$ = new CalVal(new ExpressionStatementNode($1, $2.sval)); }
+                    | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode($1, $2.sval)); }
                     | value                                                 { $$ = new CalVal(new ExpressionStatementNode($1)); }
                     ;
 expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
@@ -59,23 +59,23 @@ expression          : expression '+' expression                              { $
                     | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
                     | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2, (ExpressionNode)$3.obj)); }
                     | expression FLOORDIVIDE expression                      { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | variable                                               { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj)); }
-                    | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
-                    | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
-                    | variable '[' arrayIndex ']'                            { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, (ArrayIndexNode)$3.obj)); }
+                    | variable                                               { $$ = new CalVal(new ExpressionNode($1)); }
+                    | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode($1, $2.sval)); }
+                    | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode($1, $2.sval)); }
+                    | variable '[' INTEGERVAL ']'                            { $$ = new CalVal(new ExpressionNode($1+$2+$3.ival+$4)); }
                     | value                                                  { $$ = new CalVal(new ExpressionNode($1)); }
                     ;
 conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj)); }
                     | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode) $1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
                     | NOT conditional                                        { $$ = new CalVal(new ConditionalNode((ConditionalNode)$2.obj)); }
                     ;
-iteration           : IF '(' conditional ')' block                                       { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }       
-                    | IF '(' conditional ')' block elseif                                { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj)); }
-                    | IF '(' conditional ')' block elseif ELSE block                     { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj, (BlockNode)$8.obj)); }
-                    | IF '(' conditional ')' block ELSE block                            { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationNode((ForStatementNode)$3.obj, (ConditionalNode)$5.obj, (ForStatementNode)$7.obj, (BlockNode)$9.obj)); }
-                    | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationNode((IterableNode)$3.obj, (IterablesNode)$5.obj, (BlockNode)$7.obj)); }
-                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
+iteration           : IF '(' conditional ')' block                                       { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }       
+                    | IF '(' conditional ')' block elseif                                { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj)); }
+                    | IF '(' conditional ')' block elseif ELSE block                     { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj, (BlockNode)$8.obj)); }
+                    | IF '(' conditional ')' block ELSE block                            { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationStatementNode((ForStatementNode)$3.obj, (ConditionalNode)$5.obj, (ForStatementNode)$7.obj, (BlockNode)$9.obj)); }
+                    | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationStatementNode((IterableNode)$3.obj, (IterablesNode)$5.obj, (BlockNode)$7.obj)); }
+                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
                     ;
 gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
                     | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $3, false)); }
@@ -86,11 +86,11 @@ cellDefinition      : CELLS HAVE VARIABLE                                   { $$
 variableDeclaration : type VARIABLE                                         { $$ = new CalVal(new VariableDeclarationNode($1+$2.sval)); }
                     | type '[' INTEGERVAL ']' VARIABLE                      { $$ = new CalVal(new VariableDeclarationNode($1+$2+$3.sval+$4+$5.sval)); }
                     ;                   
-variableDefinition  : type VARIABLE '=' expression
-                    | VARIABLE '[' arrayIndex ']' '=' expression 
-                    | variable '=' expression
-                    | variable '=' functionCall
-                    | variable assign expression
+variableDefinition  : type VARIABLE '=' expression                          { $$ = new CalVal(new VariableDefitionNode($1,$2.sval,$3, (ExpressionNode)$4.obj)); }                  
+                    | VARIABLE '[' INTEGERVAL ']' '=' expression            { $$ = new CalVal(new VariableDefitionNode($1+$2+$3+$4,$5,(ExpressionNode)$6.obj)); }
+                    | variable '=' expression                               { $$ = new CalVal(new VariableDefitionNode($1,$2,(ExpressionNode)$3.obj)); }
+                    | variable '=' functionCall                             { $$ = new CalVal(new VariableDefitionNode($1,$2,(FunctionCallNode)$3.obj)); }
+                    | variable assign expression                            { $$ = new CalVal(new VariableDefitionNode($1,$2,(ExpressionNode)$3.obj)); }
                     ;
 functionDeclaration : type VARIABLE '(' parameters ')' functionBlock        { $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj)); }
                     ;
@@ -98,26 +98,26 @@ functionCall        : VARIABLE '(' actuals ')'                              { $$
                     | RANDOM '(' randomActuals')'                           { $$ = new CalVal(new FunctionCallNode((RandomActualsNode)$3.obj)); }
                     ;
 forStatement        : variableStatement                                     { $$ = new CalVal(new ForStatementNode((VariableStatementNode)$1.obj)); }
-                    | variable INCREMENT                                    { $$ = new CalVal(new ForStatementNode((VariableNode)$1.obj, $2.sval)); }
-                    | variable DECREMENT                                    { $$ = new CalVal(new ForStatementNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable INCREMENT                                    { $$ = new CalVal(new ForStatementNode($1, $2.sval)); }
+                    | variable DECREMENT                                    { $$ = new CalVal(new ForStatementNode($1, $2.sval)); }
                     ;
-elseif              : ELSEIF '(' conditional ')' block %prec IF                { $$ = new CalVal(new ElseIfNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
-                    | ELSEIF '(' conditional ')' block elseif                  { $$ = new CalVal(new ElseIfNode(ConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj)); }
+elseif              : ELSEIF '(' conditional ')' block %prec IF             { $$ = new CalVal(new ElseIfNode((ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
+                    | ELSEIF '(' conditional ')' block elseif               { $$ = new CalVal(new ElseIfNode((cConditionalNode)$3.obj, (BlockNode)$5.obj, (ElseIfNode)$6.obj)); }
                     ;
-variable            : VARIABLE
-                    | CELL
-                    | CELL '.' LIFE
-                    | CELL'.' VARIABLE
-                    | CELLS '.' LIFE
-                    | CELLS '.' VARIABLE
-                    | NEIGHBOR '.' LIFE
-                    | NEIGHBOR '.' VARIABLE
-                    | NEIGHBORS '.' LIFE
-                    | NEIGHBORS '.' VARIABLE
-                    | CELL '.' VARIABLE '[' arrayIndex ']'
-                    | NEIGHBOR '.' VARIABLE '[' arrayIndex ']'
-                    | CELLS '.' VARIABLE '[' arrayIndex ']'
-                    | NEIGHBORS '.' VARIABLE '[' arrayIndex ']'
+variable            : VARIABLE                                              { $$ = $1.sval; }
+                    | CELL                                                  { $$ = $1.sval; }
+                    | CELL '.' LIFE                                         { $$ = $1.sval + $2 + $3.sval; }
+                    | CELL'.' VARIABLE                                      { $$ = $1.sval + $2 + $3.sval; }
+                    | CELLS '.' LIFE                                        { $$ = $1.sval + $2 + $3.sval; }
+                    | CELLS '.' VARIABLE                                    { $$ = $1.sval + $2 + $3.sval; }
+                    | NEIGHBOR '.' LIFE                                     { $$ = $1.sval + $2 + $3.sval; }
+                    | NEIGHBOR '.' VARIABLE                                 { $$ = $1.sval + $2 + $3.sval; }
+                    | NEIGHBORS '.' LIFE                                    { $$ = $1.sval + $2 + $3.sval; }
+                    | NEIGHBORS '.' VARIABLE                                { $$ = $1.sval + $2 + $3.sval; }
+                    | CELL '.' VARIABLE '[' INTEGERVAL ']'                  { $$ = $1.sval + $2 + $3.sval + $4 + $5 + $6; }
+                    | NEIGHBOR '.' VARIABLE '[' INTEGERVAL ']'              { $$ = $1.sval + $2 + $3.sval + $4 + $5 + $6; }
+                    | CELLS '.' VARIABLE '[' INTEGERVAL ']'                 { $$ = $1.sval + $2 + $3.sval + $4 + $5 + $6; }
+                    | NEIGHBORS '.' VARIABLE '[' INTEGERVAL ']'             { $$ = $1.sval + $2 + $3.sval + $4 + $5 + $6; }
                     ;
 iterable            : CELL
                     | NEIGHBOR
@@ -138,7 +138,7 @@ value               : INTEGERVAL                                            { $$
                     | TRUE                                                  { $$ = $1.sval; }
                     | FALSE                                                 { $$ = $1.sval; }
                     | CHARACTERVAL                                          { $$ = $1.sval; }
-                    | STRINGVAL                                             { $$ = $1.sval; }c
+                    | STRINGVAL                                             { $$ = $1.sval; }
                     ;
 assign              : ADDEQUAL
                     | SUBTRACTEQUAL
@@ -185,9 +185,6 @@ randomActuals       :
                     | value ',' randomActuals
                     | value '~' value
                     | value '~' value ',' randomActuals
-                    ;
-arrayIndex          : INTEGERVAL
-                    | variable
                     ;
 gridtype            : TRIANGULAR
                     | SQUARE
