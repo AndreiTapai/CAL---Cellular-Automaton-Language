@@ -1,14 +1,16 @@
-/**
- * GUI class for the Cellular Automaton Language.
- * 
- * @authors Andrei Tapai, Fei-Tzin Lee
- */
+package src;
 
 import java.awt.*;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+/**
+ * GUI class for the Cellular Automaton Language.
+ * 
+ * @authors Andrei Tapai, Fei-Tzin Lee
+ */
 
 public class CAL_GUI {
 	JFrame window;
@@ -71,7 +73,7 @@ public class CAL_GUI {
 							g2.fillRect(referenceList.get(i).x,
 									referenceList.get(i).y,
 									referenceList.get(i).width,
-									referenceList.get(i).height);                                                        
+									referenceList.get(i).height);
 						}
 					} catch (IllegalArgumentException | IllegalAccessException e) {
 						// TODO Auto-generated catch block

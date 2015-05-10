@@ -14,7 +14,8 @@ public class ExpressionNode extends AbstractNode {
 		if (s == "^") {
 			sreturn = "Math.pow(" + exp1.toJava() + ", " + exp2.toJava() + ")";
 		} else if (s == "FLOORDIVIDE") {
-			sreturn = "Math.floor(" + exp1.toJava() + ", " + exp2.toJava() + ")";
+			sreturn = "Math.floor(" + exp1.toJava() + ", " + exp2.toJava()
+					+ ")";
 		} else {
 			sreturn = exp1.toJava() + " " + s + " " + exp2.toJava();
 		}
@@ -31,9 +32,11 @@ public class ExpressionNode extends AbstractNode {
 	public ExpressionNode(String v) {
 		sreturn = v;
 	}
+
 	public ExpressionNode(double v) {
 		sreturn = String.valueOf(v);
 	}
+
 	public ExpressionNode(int v) {
 		sreturn = String.valueOf(v);
 	}

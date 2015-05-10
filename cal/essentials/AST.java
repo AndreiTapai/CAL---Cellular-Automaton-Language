@@ -17,7 +17,7 @@ public class AST {
 		addNode(root.getLeft());
 		addNode(root.getRight());
 	}
-	
+
 	public String toString() {
 		return root.toString();
 	}

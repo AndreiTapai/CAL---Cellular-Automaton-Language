@@ -23,19 +23,16 @@ public class GridDefinitionNode extends AbstractNode {
 	public String toJava() {
 		// output some java code that translates to either grid g is GRIDSIZE
 		// or g is square (ignore other gridtypes)
-            String javaCode = "";
-            
-            if (type.equals("grid"))
-            {
-                javaCode = "public int gridgx = " + gridSize[0] + ";" + "\n" +
-                            "public int gridgy = " + gridSize[1] + ";" + "\n";
-            }
-            else
-            {
-                javaCode = "\n";
-            }
-            
-            return javaCode;
+		String javaCode = "";
+
+		if (type.equals("grid")) {
+			javaCode = "public int gridgx = " + gridSize[0] + ";" + "\n"
+					+ "public int gridgy = " + gridSize[1] + ";" + "\n";
+		} else {
+			javaCode = "\n";
+		}
+
+		return javaCode;
 	}
 
 }

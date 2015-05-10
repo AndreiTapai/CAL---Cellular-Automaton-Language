@@ -9,15 +9,14 @@ public class CellDefinitionNode extends AbstractNode {
 	public CellDefinitionNode(String type, String name) {
 		this.type = type;
 		this.name = name;
-		if (type == "LIFE"){
+		if (type == "LIFE") {
 			sreturn = "public boolean life;\n";
-		}
-		else{
+		} else {
 			sreturn = "public " + type + " " + name + ";\n";
 		}
 	}
 
-	/*print to FileNameCell.java*/
+	/* print to FileNameCell.java */
 	@Override
 	public String toJava() {
 		return sreturn;

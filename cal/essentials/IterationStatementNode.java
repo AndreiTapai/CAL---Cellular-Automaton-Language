@@ -52,23 +52,22 @@ public class IterationStatementNode extends AbstractNode {
 				+ elseif + "else" + elseBlock.toJava();
 	}
 
-	public IterationStatementNode(String fs1, ConditionalNode c,
-			String fs2, BlockNode b) {
+	public IterationStatementNode(String fs1, ConditionalNode c, String fs2,
+			BlockNode b) {
 		loopName = "for";
 		forStmt1 = fs1;
 		cond = c;
 		forStmt2 = fs2;
 		block = b;
-		sreturn += loopName + "(" + forStmt1 + "; " + cond.toJava()
-				+ "; " + forStmt2 + ")" + block.toJava();
+		sreturn += loopName + "(" + forStmt1 + "; " + cond.toJava() + "; "
+				+ forStmt2 + ")" + block.toJava();
 	}
 
 	public IterationStatementNode(String iteration, BlockNode b) {
 		this.iteration = iteration;
 		loopName = "for";
 		block = b;
-		sreturn += loopName + "(" + iteration + ")"
-				+ block.toJava();
+		sreturn += loopName + "(" + iteration + ")" + block.toJava();
 	}
 
 	@Override
