@@ -149,22 +149,22 @@ assign              : ADDEQUAL
                     | MODULOEQUAL
                     | FLOOREQUAL
                     ;
-condition           : EQUALS
-                    | GREATER
-                    | GREATEREQUALS
-                    | LESS
-                    | LESSEQUALS
-                    | NOTEQUALS
+condition           : EQUALS                        { $$ = new CalVal(new ConditionNode($1.sval)); }
+                    | GREATER                       { $$ = new CalVal(new ConditionNode($1.sval)); }
+                    | GREATEREQUALS                 { $$ = new CalVal(new ConditionNode($1.sval)); }
+                    | LESS                          { $$ = new CalVal(new ConditionNode($1.sval)); }
+                    | LESSEQUALS                    { $$ = new CalVal(new ConditionNode($1.sval)); }
+                    | NOTEQUALS                     { $$ = new CalVal(new ConditionNode($1.sval)); }
                     ;
-logic               : AND
-                    | OR
-                    | NOR
-                    | NAND
-                    | XOR
+logic               : AND                      { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | OR                       { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | NOR                      { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | NAND                     { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | XOR                      { $$ = new CalVal(new LogicNode($1.sval)); }
                     ;
-block               : '|' statements '|'
-                    | statement
-                    | '|' '|'
+block               : '|' statements '|'           { $$ = new CalVal(new BlockNode((StatementsNode)$2.obj)); }
+                    | statement                    { $$ = new CalVal(new BlockNode((StatementNode)$1.obj)); }
+                    | '|' '|'                      { $$ = new CalVal(new BlockNode()); }
                     ;
 functionBlock       : '|' statements return '|'     { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj, (ReturnsNode)$3.obj)); }
                     | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((ReturnsNode)$2.obj)); }
