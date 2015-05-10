@@ -20,7 +20,7 @@ ID = [a-zA-Z_][a-zA-Z0-9_]*
 /*floats*/
 ["+"|"-"]?{DIGIT}+"."{DIGIT}*		{ yyparser.yylval = new CalVal(Double.parseDouble(yytext())); return Cal.FLOATVAL; }
 /*gridsize*/
-[1-9]+{DIGIT}*x[1-9]{DIGIT}*		{ return Cal.GRIDSIZE; }
+[1-9]+{DIGIT}*x[1-9]{DIGIT}*		{ yyparser.yylval = new CalVal(yytext()); return Cal.GRIDSIZE; }
 
 /*literals*/
 '(\\.|[^\'])'						{ yyparser.yylval = new CalVal(yytext()); return Cal.CHARACTERVAL; }

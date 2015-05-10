@@ -1,16 +1,36 @@
 package cal.essentials;
 
-public class StatementNode extends AbstractNode{
+public class StatementNode extends AbstractNode {
 
-	
-	public StatementNode(StatementNode... nodes){
+	String sreturn;
 
+	public StatementNode(HeaderStatementNode node) {
+		sreturn = node.toJava();
 	}
 
-	@Override 
-	public String toJava(){
-		return ";\n" ;
+	public StatementNode(VariableStatementNode node) {
+		sreturn = node.toJava();
 	}
 
+	public StatementNode(FunctionStatementNode node) {
+		sreturn = node.toJava();
+	}
+
+	public StatementNode(String continuation) {
+		sreturn = continuation + ";\n";
+	}
+
+	public StatementNode(ExpressionStatementNode node) {
+		sreturn = node.toJava();
+	}
+
+	public StatementNode(IterationStatementNode node) {
+		sreturn = node.toJava();
+	}
+
+	@Override
+	public String toJava() {
+		return sreturn;
+	}
 
 }

@@ -1,3 +1,4 @@
+package src;
 
 /**
  * Test main goes in here.

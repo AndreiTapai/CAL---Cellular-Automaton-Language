@@ -1,23 +1,30 @@
 package cal.essentials;
 
-public class StatementsNode extends AbstractNode{
+import java.util.ArrayList;
 
-	ArrayList<StatementNode> statements;
+public class StatementsNode extends AbstractNode {
 
-	public StatementsNode(StatementNode node, ArrayList<StatementNode> statements){
+	public ArrayList<StatementNode> statements;
+
+	public StatementsNode(StatementNode node,
+			ArrayList<StatementNode> statements) {
 		this.statements = new ArrayList<StatementNode>();
 		this.statements.add(node);
-		for(StatementsNode statement: statements)
+		for (StatementNode statement : statements)
 			this.statements.add(statement);
 	}
 
-	@Override 
-	public String toJava(){
-		String sval = "";
-		for(StatementsNode statement: statements)
-			sval += statement.toJava();
-		return ";\n" ;
+	public StatementsNode(StatementNode node) {
+		statements = new ArrayList<StatementNode>();
+		statements.add(node);
 	}
 
+	@Override
+	public String toJava() {
+		String sval = "";
+		for (StatementNode statement : statements)
+			sval += statement.toJava();
+		return sval;
+	}
 
 }

@@ -1,12 +1,6 @@
 %{
 import java.io.*;
-import cal.essentials.AbstractNode;
-import cal.essentials.FunctionDeclarationNode;
-import cal.essentials.FunctionBlockNode;
-import cal.essentials.ParametersNode;
-import cal.essentials.ReturnsNode;
-import cal.essentials.StatementsNode;
-import cal.essentials.StatementNode;
+import cal.essentials.*;
 %}
 
 %token INTEGERVAL FLOATVAL CHARACTERVAL STRINGVAL TRUE FALSE GRIDSIZE     
@@ -29,156 +23,152 @@ import cal.essentials.StatementNode;
 %right ADDEQUAL SUBTRACTEQUAL MULTIPLYEQUAL DIVIDEEQUAL MODULOEQUAL FLOOREQUAL
       
 %%
-
-program             : statements                                            { $$ = $1; }
-                    ;
+program             : statements                                            { }
 statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
-                    | statement statements                                  { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
+                    | statement statements  { 
+                        $$ = new CalVal(new StatementsNode((StatementNode)$1.obj, ((StatementsNode)$2.obj).statements));
+                    } 
                     ;
-statement           : headerStatement                                       { $$ = $1; }
-                    | variableStatement                                     { $$ = $1; }
-                    | functionStatement                                     { $$ = $1; }
-                    | continuation                                          { $$ = $1; }
-                    | expressionStatement                                   { $$ = $1; }
-                    | iteration                                             { $$ = $1; }
+statement           : headerStatement                                       { $$ = new CalVal(new StatementNode((HeaderStatementNode)$1.obj)); }
+                    | variableStatement                                     { $$ = new CalVal(new StatementNode((VariableStatementNode)$1.obj)); }
+                    | functionStatement                                     { $$ = new CalVal(new StatementNode((FunctionStatementNode)$1.obj)); }
+                    | continuation                                          { $$ = new CalVal(new StatementNode($1.sval)); }
+                    | expressionStatement                                   { $$ = new CalVal(new StatementNode((ExpressionStatementNode)$1.obj)); }
+                    | iteration                                             { $$ = new CalVal(new StatementNode((IterationStatementNode)$1.obj)); }
                     ;
-headerStatement     : gridDefinition                                        { $$ = $1; }
-                    | cellDefinition                                        { $$ = $1; }
+headerStatement     : gridDefinition                                        { $$ = new CalVal(new HeaderStatementNode((GridDefinitionNode)$1.obj)); }
+                    | cellDefinition                                        { $$ = new CalVal(new HeaderStatementNode((CellDefinitionNode)$1.obj)); }
                     ;
-variableStatement   : variableDeclaration                                   { $$ = $1; }
-                    | variableDefinition                                    { $$ = $1; }
+variableStatement   : variableDeclaration                                   { $$ = new CalVal(new VariableStatementNode((VariableDeclarationNode)$1.obj)); }
+                    | variableDefinition                                    { $$ = new CalVal(new VariableStatementNode((VariableDefinitionNode)$1.obj)); }
                     ;
-functionStatement   : functionDeclaration                                   { $$ = $1; }
-                    | functionCall                                          { $$ = $1; }
+functionStatement   : functionDeclaration                                   { $$ = new CalVal(new FunctionStatementNode((FunctionDeclarationNode)$1.obj)); }
+                    | functionCall                                          { $$ = new CalVal(new FunctionStatementNode((FunctionCallNode)$1.obj)); }
                     ;
-continuation        : CONTINUE
-                    | BREAK
+continuation        : CONTINUE                                              { $$ = new CalVal($1.sval); }
+                    | BREAK                                                 { $$ = new CalVal($1.sval); }
                     ;
-expressionStatement : variable                                              { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
-                    | value                                                 { $$ = $1; }
+expressionStatement : variable                                              { $$ = new CalVal(new ExpressionStatementNode($1.sval)); }
+                    | variable INCREMENT                                    { $$ = new CalVal(new ExpressionStatementNode($1.sval+$2.sval)); }
+                    | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode($1.sval+$2.sval)); }
                     ;
-expression          : expression '+' expression
-                    | expression '-' expression
-                    | expression '*' expression
-                    | expression '/' expression
-                    | expression '^' expression
-                    | expression FLOORDIVIDE expression
-                    | variable                                              { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
-                    | VARIABLE '[' arrayIndex ']'
-                    | value                                                 { $$ = $1; }
+expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression FLOORDIVIDE expression                      { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | variable                                               { $$ = new CalVal(new ExpressionNode($1.sval)); }
+                    | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode($1.sval + $2.sval)); }
+                    | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode($1.sval + $2.sval)); }
+                    | variable '[' INTEGERVAL ']'                            { $$ = new CalVal(new ExpressionNode($1.sval+$2.sval+$3.ival+$4)); }
+                    | value                                                  { $$ = new CalVal(new ExpressionNode($1.sval)); }
                     ;
-conditional         : expression condition expression                        
-                    | expression condition expression logic conditional      
-                    | NOT conditional                                        
+conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj)); }
+                    | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode) $1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
+                    | NOT conditional                                        { $$ = new CalVal(new ConditionalNode((ConditionalNode)$2.obj)); }
                     ;
-iteration           : IF '(' conditional ')' block                           
-                    | IF '(' conditional ')' block elseif                    
-                    | IF '(' conditional ')' block elseif ELSE block       
-                    | IF '(' conditional ')' block ELSE block                 
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    
-                    | FOREACH '(' iterable IN iterables ')' block             
-                    | WHILE '(' conditional ')' block                        
+iteration           : IF '(' conditional ')' block                                       { $$ = new CalVal(new IterationStatementNode($1.sval, (ConditionalNode)$3.obj, (BlockNode)$5.obj)); }       
+                    | IF '(' conditional ')' block elseif                                { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, $6.sval)); }
+                    | IF '(' conditional ')' block elseif ELSE block                     { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, $6.sval, (BlockNode)$8.obj)); }
+                    | IF '(' conditional ')' block ELSE block                            { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationStatementNode($3.sval, (ConditionalNode)$5.obj, $7.sval, (BlockNode)$9.obj)); }
+                    | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationStatementNode($3.sval + ":" + $5.sval, (BlockNode)$7.obj)); }
+                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationStatementNode($1.sval, (ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
                     ;
-gridDefinition      : GRID VARIABLE IS GRIDSIZE 
-                    | VARIABLE IS gridtype
+gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
+                    | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $3.sval, false)); }
                     ;
-cellDefinition      : CELLS HAVE VARIABLE
-                    | CELLS HAVE LIFE
+cellDefinition      : CELLS HAVE type VARIABLE                              { $$ = new CalVal(new CellDefinitionNode($3.sval, $4.sval)); }
+                    | CELLS HAVE type LIFE                                  { $$ = new CalVal(new CellDefinitionNode($3.sval, $4.sval)); }
                     ;
-variableDeclaration : type VARIABLE 
-                    | type '[' INTEGERVAL ']' VARIABLE
+variableDeclaration : type VARIABLE                                         { $$ = new CalVal(new VariableDeclarationNode($1.sval+$2.sval)); }
+                    | type '[' INTEGERVAL ']' VARIABLE                      { $$ = new CalVal(new VariableDeclarationNode($1.sval+$2+$3.sval+$4+$5.sval)); }
                     ;                   
-variableDefinition  : type VARIABLE '=' expression
-                    | VARIABLE '[' arrayIndex ']' '=' expression 
-                    | variable '=' expression
-                    | variable '=' functionCall
-                    | variable assign expression
+variableDefinition  : type VARIABLE '=' expression                          { $$ = new CalVal(new VariableDefinitionNode($1.sval+$2.sval,$3.sval, (ExpressionNode)$4.obj)); }                  
+                    | VARIABLE '[' INTEGERVAL ']' '=' expression            { $$ = new CalVal(new VariableDefinitionNode($1.sval+$2.sval+$3.sval+$4.sval,$5.sval,(ExpressionNode)$6.obj)); }
+                    | variable '=' expression                               { $$ = new CalVal(new VariableDefinitionNode($1.sval,$2.sval,(ExpressionNode)$3.obj)); }
+                    | variable '=' functionCall                             { $$ = new CalVal(new VariableDefinitionNode($1.sval,$2.sval,(FunctionCallNode)$3.obj)); }
+                    | variable assign expression                            { $$ = new CalVal(new VariableDefinitionNode($1.sval,$2.sval,(ExpressionNode)$3.obj)); }
                     ;
-functionDeclaration : type VARIABLE '(' parameters ')' functionBlock {
-                        $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj));
-                        System.out.println(((FunctionDeclarationNode)$$.obj).toString());
-                    }
+functionDeclaration : type VARIABLE '(' parameters ')' functionBlock        { $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj)); }
                     ;
-functionCall        : VARIABLE '(' actuals ')'
-                    | RANDOM '(' randomActuals')'
+functionCall        : VARIABLE '(' actuals ')'                              { $$ = new CalVal(new FunctionCallNode($1.sval, $3.sval)); }
+                    | RANDOM '(' randomActuals')'                           { $$ = new CalVal(new FunctionCallNode($1.sval, $3.sval)); }
                     ;
-forStatement        : variableStatement                                     { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
+forStatement        : variableStatement                                     { $$ = new CalVal($1.sval); }
+                    | variable INCREMENT                                    { $$ = new CalVal($1.sval+$2.sval); }
+                    | variable DECREMENT                                    { $$ = new CalVal($1.sval+$2.sval); }
                     ;
-elseif              : ELSEIF '(' conditional ')' block %prec IF
-                    | ELSEIF '(' conditional ')' block elseif
+elseif              : ELSEIF '(' conditional ')' block %prec IF             { $$ = new CalVal($1.sval+$2.sval+$3.sval+$4.sval+((BlockNode)$5.obj).toJava()); }
+                    | ELSEIF '(' conditional ')' block elseif               { $$ = new CalVal($1.sval+$2.sval+$3.sval+$4.sval+((BlockNode)$5.obj).toJava()+$6.sval); }
                     ;
-variable            : VARIABLE
-                    | CELL
-                    | CELL '.' LIFE
-                    | CELL'.' VARIABLE
-                    | CELLS '.' LIFE
-                    | CELLS '.' VARIABLE
-                    | NEIGHBOR '.' LIFE
-                    | NEIGHBOR '.' VARIABLE
-                    | NEIGHBORS '.' LIFE
-                    | NEIGHBORS '.' VARIABLE
-                    | CELL '.' VARIABLE '[' arrayIndex ']'
-                    | NEIGHBOR '.' VARIABLE '[' arrayIndex ']'
-                    | CELLS '.' VARIABLE '[' arrayIndex ']'
-                    | NEIGHBORS '.' VARIABLE '[' arrayIndex ']'
+variable            : VARIABLE                                              { $$ = new CalVal($1.sval); }
+                    | CELL                                                  { $$ = new CalVal($1.sval); }
+                    | CELL '.' LIFE                                         { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | CELL'.' VARIABLE                                      { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | CELLS '.' LIFE                                        { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | CELLS '.' VARIABLE                                    { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | NEIGHBOR '.' LIFE                                     { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | NEIGHBOR '.' VARIABLE                                 { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | NEIGHBORS '.' LIFE                                    { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | NEIGHBORS '.' VARIABLE                                { $$ = new CalVal($1.sval + $2 + $3.sval); }
+                    | CELL '.' VARIABLE '[' INTEGERVAL ']'                  { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
+                    | NEIGHBOR '.' VARIABLE '[' INTEGERVAL ']'              { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
+                    | CELLS '.' VARIABLE '[' INTEGERVAL ']'                 { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
+                    | NEIGHBORS '.' VARIABLE '[' INTEGERVAL ']'             { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
                     ;
-iterable            : CELL
-                    | NEIGHBOR
+iterable            : CELL                                                  { $$ = new CalVal($1.sval); }
+                    | NEIGHBOR                                              { $$ = new CalVal($1.sval); }
                     ;
-iterables           : CELLS
-                    | NEIGHBORS
+iterables           : CELLS                                                 { $$ = new CalVal($1.sval); }
+                    | NEIGHBORS                                             { $$ = new CalVal($1.sval); }
                     ;
-type                : INTEGER
-                    | FLOAT
-                    | BOOLEAN
-                    | CHARACTER
-                    | STRING
-                    | VOID
-                    | NEIGHBOR
+type                : INTEGER                                               { $$ = new CalVal($1.sval); }
+                    | FLOAT                                                 { $$ = new CalVal($1.sval); }
+                    | BOOLEAN                                               { $$ = new CalVal($1.sval); }
+                    | CHARACTER                                             { $$ = new CalVal($1.sval); }
+                    | STRING                                                { $$ = new CalVal($1.sval); }
+                    | VOID                                                  { $$ = new CalVal($1.sval); }
+                    | NEIGHBOR                                              { $$ = new CalVal($1.sval); }
                     ;
-value               : INTEGERVAL
-                    | FLOATVAL
-                    | TRUE
-                    | FALSE
-                    | CHARACTERVAL
-                    | STRINGVAL
+value               : INTEGERVAL                                            { $$ = new CalVal($1.sval); }
+                    | FLOATVAL                                              { $$ = new CalVal($1.sval); }
+                    | TRUE                                                  { $$ = new CalVal($1.sval); }
+                    | FALSE                                                 { $$ = new CalVal($1.sval); }
+                    | CHARACTERVAL                                          { $$ = new CalVal($1.sval); }
+                    | STRINGVAL                                             { $$ = new CalVal($1.sval); }
                     ;
-assign              : ADDEQUAL
-                    | SUBTRACTEQUAL
-                    | MULTIPLYEQUAL
-                    | DIVIDEEQUAL
-                    | MODULOEQUAL
-                    | FLOOREQUAL
+assign              : ADDEQUAL                                              { $$ = new CalVal($1.sval); }
+                    | SUBTRACTEQUAL                                         { $$ = new CalVal($1.sval); }
+                    | MULTIPLYEQUAL                                         { $$ = new CalVal($1.sval); }
+                    | DIVIDEEQUAL                                           { $$ = new CalVal($1.sval); }
+                    | MODULOEQUAL                                           { $$ = new CalVal($1.sval); }
+                    | FLOOREQUAL                                            { $$ = new CalVal($1.sval); }
                     ;
-condition           : EQUALS
-                    | GREATER
-                    | GREATEREQUALS
-                    | LESS
-                    | LESSEQUALS
-                    | NOTEQUALS
+condition           : EQUALS                                                { $$ = new CalVal($1.sval); }
+                    | GREATER                                               { $$ = new CalVal($1.sval); }
+                    | GREATEREQUALS                                         { $$ = new CalVal($1.sval); }
+                    | LESS                                                  { $$ = new CalVal($1.sval); }
+                    | LESSEQUALS                                            { $$ = new CalVal($1.sval); }
+                    | NOTEQUALS                                             { $$ = new CalVal($1.sval); }
                     ;
-logic               : AND
-                    | OR
-                    | NOR
-                    | NAND
-                    | XOR
+logic               : AND                                                   { $$ = new CalVal($1.sval); }
+                    | OR                                                    { $$ = new CalVal($1.sval); }
+                    | NOR                                                   { $$ = new CalVal($1.sval); }
+                    | NAND                                                  { $$ = new CalVal($1.sval); }
+                    | XOR                                                   { $$ = new CalVal($1.sval); }
                     ;
-block               : '|' statements '|'
-                    | statement
-                    | '|' '|'
+block               : '|' statements '|'            { $$ = new CalVal(new BlockNode((StatementsNode)$2.obj)); }
+                    | statement                     { $$ = new CalVal(new BlockNode((StatementNode)$1.obj)); }
+                    | '|' '|'                       { $$ = new CalVal(new BlockNode()); }
                     ;
 functionBlock       : '|' statements return '|'     { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj, (ReturnsNode)$3.obj)); }
                     | '|' return '|'                { $$ = new CalVal(new FunctionBlockNode((ReturnsNode)$2.obj)); }
                     | '|' statements'|'             { $$ = new CalVal(new FunctionBlockNode((StatementsNode)$2.obj)); }
                     | '|' '|'                       { $$ = new CalVal(new FunctionBlockNode()); }
                     ;
-return              : RETURN value                  { $$ = new CalVal(new ReturnsNode($2.dval)); } 
+return              : RETURN value                  { $$ = new CalVal(new ReturnsNode(Double.parseDouble($2.sval))); } 
                     | RETURN variable               { $$ = new CalVal(new ReturnsNode($2.sval)); }
                     ;
 parameters          :                               { $$ = new CalVal(new ParametersNode()); }
@@ -186,21 +176,18 @@ parameters          :                               { $$ = new CalVal(new Parame
                     | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, ((ParametersNode)$4.obj).params)); }
                     | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     ;
-actuals             : variable
-                    | variable ',' actuals
+actuals             : variable                      { $$ = (CalVal)$1; }
+                    | variable ',' actuals          { $$ = new CalVal($1.sval+$2.sval+$3.sval); }
                     ;
 randomActuals       : 
-                    | value
-                    | value ',' randomActuals
-                    | value '~' value
-                    | value '~' value ',' randomActuals
+                    | value                                                 { $$ = (CalVal)$1; }
+                    | value ',' randomActuals                               { $$ = new CalVal($1.sval +','+$3.sval); }
+                    | value '~' value                                       { $$ = new CalVal($1.sval +'~'+$3.sval); }
+                    | value '~' value ',' randomActuals                     { $$ = new CalVal($1.sval +'~'+$3.sval+','+$5.sval); }
                     ;
-arrayIndex          : INTEGERVAL
-                    | variable
-                    ;
-gridtype            : TRIANGULAR
-                    | SQUARE
-                    | HEXAGONAL
+gridtype            : TRIANGULAR                    { $$ = new CalVal($1.sval); }
+                    | SQUARE                        { $$ = new CalVal($1.sval); }
+                    | HEXAGONAL                     { $$ = new CalVal($1.sval); }
                     ;
 %%
 private Yylex lexer;
