@@ -41,34 +41,34 @@ statement           : headerStatement                                       { $$
                     | expressionStatement                                   { $$ = $1; }
                     | iteration                                             { $$ = $1; }
                     ;
-headerStatement     : gridDefinition                                        { $$ = $1; }
-                    | cellDefinition                                        { $$ = $1; }
+headerStatement     : gridDefinition                                        { $$ = new CalVal(new HeaderStatementNode((GridDefinitionNode)$1.obj)); }
+                    | cellDefinition                                        { $$ = new CalVal(new HeaderStatementNode((CellDefinitionNode)$1.obj)); }
                     ;
-variableStatement   : variableDeclaration                                   { $$ = $1; }
-                    | variableDefinition                                    { $$ = $1; }
+variableStatement   : variableDeclaration                                   { $$ = new CalVal(new VariableStatementNode((VariableDeclarationNode)$1.obj)); }
+                    | variableDefinition                                    { $$ = new CalVal(new VariableStatementNode((VaraibleDefinitionNode)$1.obj)); }
                     ;
-functionStatement   : functionDeclaration                                   { $$ = $1; }
-                    | functionCall                                          { $$ = $1; }
+functionStatement   : functionDeclaration                                   { $$ = new CalVal(new FunctionStatementNode((FunctionDeclarationNode)$1.obj)); }
+                    | functionCall                                          { $$ = new CalVal(new FunctionStatementNode((FunctionCallNode)$1.obj)); }
                     ;
-continuation        : CONTINUE
-                    | BREAK
+continuation        : CONTINUE                                              { $$ = new CalVal(new ContinuationNode($1.sval)); }
+                    | BREAK                                                 { $$ = new CalVal(new ContinuationNode($1.sval)); }
                     ;
-expressionStatement : variable                                              { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
-                    | value                                                 { $$ = $1; }
+expressionStatement : variable                                              { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj)); }
+                    | variable INCREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode((VariableNode)$1.obj, $2.sval)); }
+                    | value                                                 { $$ = new CalVal(new ExpressionStatementNode((ValueNode)$1.obj)); }
                     ;
-expression          : expression '+' expression
-                    | expression '-' expression
-                    | expression '*' expression
-                    | expression '/' expression
-                    | expression '^' expression
-                    | expression FLOORDIVIDE expression 
-                    | variable                                               { $$ = $1; }
-                    | variable INCREMENT
-                    | variable DECREMENT
-                    | VARIABLE '[' arrayIndex ']'
-                    | value                                                  { $$ = $1; }
+expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression FLOORDIVIDE expression                      { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | variable                                               { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj)); }
+                    | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, $2.sval)); }
+                    | variable '[' arrayIndex ']'                            { $$ = new CalVal(new ExpressionNode((VariableNode)$1.obj, (ArrayIndexNode)$3.obj)); }
+                    | value                                                  { $$ = new CalVal(new ExpressionNode((ValueNode)$1.obj)); }
                     ;
 conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj)); }
                     | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode) $1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
