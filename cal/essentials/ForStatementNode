@@ -21,4 +21,9 @@ public class ForStatementNode extends AbstractNode{
 		}
 	}
 	
+	@Override
+	public String toJava(){
+		return sreturn;
+	}
+	
 }
