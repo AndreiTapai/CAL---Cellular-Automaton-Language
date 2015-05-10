@@ -1,23 +1,24 @@
 package cal.essentials;
 
-public class FunctionDeclarationNode extends AbstractNode{
+public class FunctionStatementNode extends AbstractNode{
 
-
-	private String type;
-	private String name;
-	private ParametersNode params;
-	private FunctionBlockNode block;
-	//from production functionStatement --> functionDeclaration
-	public FunctionDeclarationNode(String type, String name, ParametersNode params, FunctionBlockNode block){
-		this.type = type;
-		this.name = name;
-		this.params = params;
-		this.block = block;
+	private String sreturn;
+	private FunctionDeclarationNode fDec;
+	private FunctionCallNode fCall;
+	
+	public FunctionStatementNode(FunctionDeclarationNode f){
+		fDec = f;
+		sreturn = fDec.toJava();
 	}
-	@override 
-	public String toJave(){
-		return "public static " + type + " " + name + '(' params.toJava() ')' block.toJava();
+	
+	public FunctionStatementNode(FunctionCallNode f){
+		fCall = f;
+		sreturn = fCall.toJava();
 	}
-
-
+	
+	@Override
+	public String toJava(){
+		return sreturn;
+	}
+	
 }
