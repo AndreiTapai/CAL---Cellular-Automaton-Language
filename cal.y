@@ -1,6 +1,11 @@
 %{
   import java.io.*;
-  import cal.essentials.Node;
+  import cal.essentials.AbstractNode;
+  import cal.essentials.FunctionDeclarationNode;
+    import cal.essentials.FunctionBlockNode;
+  import cal.essentials.ParametersNode;
+  import cal.essentials.ReturnsNode;
+  import cal.essentials.StatementsNode;
 %}
 
 %token INTEGERVAL FLOATVAL CHARACTERVAL STRINGVAL TRUE FALSE GRIDSIZE     
@@ -92,7 +97,9 @@ variableDefinition  : type VARIABLE '=' expression
                     | variable '=' functionCall
                     | variable assign expression
                     ;
-functionDeclaration : type VARIABLE '(' parameters ')' functionBlock
+functionDeclaration : type VARIABLE '(' parameters ')' functionBlock {
+                        $$ = new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4, (FunctionBlockNode)$5);
+                    }
                     ;
 functionCall        : VARIABLE '(' actuals ')'
                     | RANDOM '(' randomActuals')'
@@ -164,18 +171,18 @@ block               : '|' statements '|'
                     | statement
                     | '|' '|'
                     ;
-functionBlock       : '|' statements return '|'
-                    | '|' return '|'
-                    | '|' statements'|'
-                    | '|' '|'
+functionBlock       : '|' statements return '|'     { $$ = new FunctionBlockNode($2, $3); }
+                    | '|' return '|'                { $$ = new FunctionBlockNode($2); }
+                    | '|' statements'|'             { $$ = new FunctionBlockNode($2); }
+                    | '|' '|'                       { $$ = new FunctionBlockNode(); }
                     ;
-return              : RETURN value
-                    | RETURN variable
+return              : RETURN value                  { $$ = new ReturnsNode($2.dval); } 
+                    | RETURN variable               { $$ = new ReturnsNode($2.sval); }
                     ;
-parameters          : 
-                    | type VARIABLE
-                    | type VARIABLE ',' parameters
-                    | CELL VARIABLE
+parameters          :                               { $$ = new ParametersNode(); }
+                    | type VARIABLE                 { $$ = new ParametersNode($1.sval, $2.sval); }
+                    | type VARIABLE ',' parameters  { $$ = new ParametersNode($1, $2, $3); }
+                    | CELL VARIABLE                 { $$ = new ParametersNode($1, $2); }
                     ;
 actuals             : variable
                     | variable ',' actuals
