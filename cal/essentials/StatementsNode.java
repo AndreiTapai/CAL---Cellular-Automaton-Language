@@ -4,7 +4,7 @@ public class StatementsNode extends AbstractNode{
 
 
 	@Override 
-	public String toJave(){
+	public String toJava(){
 		return ";\n" ;
 	}
 

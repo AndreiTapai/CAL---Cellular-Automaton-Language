@@ -9,13 +9,13 @@ public class ReturnsNode extends AbstractNode{
 		sval = value;
 	}
 	public ReturnsNode(double value){
-		sval = String.parseString(value);
+		sval = String.valueOf(value);
 	}
 	public ReturnsNode(int value){
-		sval = String.parseString(value);
+		sval = String.valueOf(value);
 	}
 	public ReturnsNode(char value){
-		sval = String.parseString(value);
+		sval = String.valueOf(value);
 	}
 
 	@Override 

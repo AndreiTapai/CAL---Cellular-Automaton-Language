@@ -9,12 +9,13 @@ public class ParametersNode extends AbstractNode{
 		params = new ArrayList<ArrayList<String>>(2);
 
 		String arg;
-		for(int i = 0, index = 0; i < args.size(); i++){
+		for(int i = 0, index = 0; i < args.length; i++){
+			arg = args[i];
 			if(arg.equals(",")){
 				index = 0;
 				continue;
 			}
-			params.get(index).append(arg);
+			params.get(index).add(arg);
 			index++;
 		}
 	}
@@ -26,14 +27,14 @@ public class ParametersNode extends AbstractNode{
 	public String toJava(){
 		String sval = "";
 
-		for(int i = 0; i < params[0].size(); i++){
+		for(int i = 0; i < params.get(0).size(); i++){
 			sval += params.get(0).get(i);
 			sval += " ";
 			sval += params.get(1).get(i);
 			sval += ",";
 		}
-		if(sval[sval.length - 1] == ',')
-			sval.remove(sval.length -1);
+		if(sval.charAt(sval.length() - 1) == ',')
+			sval = new String(sval.substring(0, sval.length()-1));
 
 		return sval;
 	}
