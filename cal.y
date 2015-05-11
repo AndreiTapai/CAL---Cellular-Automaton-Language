@@ -23,7 +23,7 @@ import cal.essentials.*;
 %right ADDEQUAL SUBTRACTEQUAL MULTIPLYEQUAL DIVIDEEQUAL MODULOEQUAL FLOOREQUAL
       
 %%
-program             : statements                                            { }
+program             : statements                                            { root = (StatementsNode)$1.obj; }
 statements          : statement                                             { $$ = new CalVal(new StatementsNode((StatementNode)$1.obj)); } 
                     | statement statements  { 
                         $$ = new CalVal(new StatementsNode((StatementNode)$1.obj, ((StatementsNode)$2.obj).statements));
@@ -63,20 +63,19 @@ expression          : expression '+' expression                              { $
                     | variable DECREMENT                                     { $$ = new CalVal(new ExpressionNode($1.sval + $2.sval)); }
                     | value                                                  { $$ = new CalVal(new ExpressionNode($1.sval)); }
                     ;
-conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj)); }
-                    | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode) $1.obj, (ConditionNode)$2.obj, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
+conditional         : expression condition expression                        { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+                    | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
                     | NOT conditional                                        { $$ = new CalVal(new ConditionalNode((ConditionalNode)$2.obj)); }
                     ;
-iteration           : IF '(' conditional ')' block %prec IF                              { $$ = new CalVal(new IterationStatementNode($1.sval, (ConditionalNode)$3.obj, (BlockNode)$5.obj)); }       
-                    | IF '(' conditional ')' block elseif %prec IF                       { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, $6.sval)); }
-                    | IF '(' conditional ')' block elseif ELSE block %prec IF            { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, $6.sval, (BlockNode)$8.obj)); }
-                    | IF '(' conditional ')' block ELSE block %prec IF                   { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationStatementNode($3.sval, (ConditionalNode)$5.obj, $7.sval, (BlockNode)$9.obj)); }
+iteration           : IF '(' conditional ')' block %prec IF                              { $$ = new CalVal(new IterationStatementNode($1.sval, $3.sval, (BlockNode)$5.obj)); }       
+                    | IF '(' conditional ')' block elseif %prec IF                       { $$ = new CalVal(new IterationStatementNode($3.sval, (BlockNode)$5.obj, $6.sval)); }
+                    | IF '(' conditional ')' block elseif ELSE block %prec IF            { $$ = new CalVal(new IterationStatementNode($3.sval, (BlockNode)$5.obj, $6.sval, (BlockNode)$8.obj)); }
+                    | IF '(' conditional ')' block ELSE block %prec IF                   { $$ = new CalVal(new IterationStatementNode($3.sval, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationStatementNode($3.sval, $5.sval, $7.sval, (BlockNode)$9.obj)); }
                     | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationStatementNode($3.sval + ":" + $5.sval, (BlockNode)$7.obj)); }
-                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationStatementNode($1.sval, (ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
+                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationStatementNode($1.sval, $3.sval, (BlockNode)$5.obj)); }
                     ;
-gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval, true)); }
-                    | VARIABLE IS gridtype                                  { $$ = new CalVal(new GridDefinitionNode($2.sval, $3.sval, false)); }
+gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval)); }
                     ;
 cellDefinition      : CELLS HAVE type VARIABLE                              { $$ = new CalVal(new CellDefinitionNode($3.sval, $4.sval)); }
                     | CELLS HAVE type LIFE                                  { $$ = new CalVal(new CellDefinitionNode($3.sval, $4.sval)); }
@@ -111,10 +110,10 @@ variable            : VARIABLE                                              { $$
                     | NEIGHBOR '.' VARIABLE                                 { $$ = new CalVal($1.sval + $2 + $3.sval); }
                     | NEIGHBORS '.' LIFE                                    { $$ = new CalVal($1.sval + $2 + $3.sval); }
                     | NEIGHBORS '.' VARIABLE                                { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | CELL '.' VARIABLE '[' INTEGERVAL ']'                  { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
-                    | NEIGHBOR '.' VARIABLE '[' INTEGERVAL ']'              { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
-                    | CELLS '.' VARIABLE '[' INTEGERVAL ']'                 { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
-                    | NEIGHBORS '.' VARIABLE '[' INTEGERVAL ']'             { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5 + $6); }
+                    | CELL '.' VARIABLE '[' arrayIndex ']'                  { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
+                    | NEIGHBOR '.' VARIABLE '[' arrayIndex ']'              { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
+                    | CELLS '.' VARIABLE '[' arrayIndex ']'                 { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
+                    | NEIGHBORS '.' VARIABLE '[' arrayIndex ']'             { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
                     | VARIABLE '[' INTEGERVAL ']'                           { $$ = new CalVal($1.sval + $2 + $3 + $4); }
                     ;
 iterable            : CELL                                                  { $$ = new CalVal($1.sval); }
@@ -152,11 +151,11 @@ condition           : EQUALS                                                { $$
                     | LESSEQUALS                                            { $$ = new CalVal($1.sval); }
                     | NOTEQUALS                                             { $$ = new CalVal($1.sval); }
                     ;
-logic               : AND                                                   { $$ = new CalVal($1.sval); }
-                    | OR                                                    { $$ = new CalVal($1.sval); }
-                    | NOR                                                   { $$ = new CalVal($1.sval); }
-                    | NAND                                                  { $$ = new CalVal($1.sval); }
-                    | XOR                                                   { $$ = new CalVal($1.sval); }
+logic               : AND                                                   { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | OR                                                    { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | NOR                                                   { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | NAND                                                  { $$ = new CalVal(new LogicNode($1.sval)); }
+                    | XOR                                                   { $$ = new CalVal(new LogicNode($1.sval)); }
                     ;
 block               : '|' statements '|'            { $$ = new CalVal(new BlockNode((StatementsNode)$2.obj)); }
                     | statement                     { $$ = new CalVal(new BlockNode((StatementNode)$1.obj)); }
@@ -184,13 +183,13 @@ randomActuals       :
                     | value '~' value                                       { $$ = new CalVal($1.sval +'~'+$3.sval); }
                     | value '~' value ',' randomActuals                     { $$ = new CalVal($1.sval +'~'+$3.sval+','+$5.sval); }
                     ;
-gridtype            : TRIANGULAR                    { $$ = new CalVal($1.sval); }
-                    | SQUARE                        { $$ = new CalVal($1.sval); }
-                    | HEXAGONAL                     { $$ = new CalVal($1.sval); }
+arrayIndex          : INTEGERVAL                                            { $$ = new CalVal(String.valueOf($1)); }
+                    | VARIABLE                                              { $$ = new CalVal($1); }
                     ;
 %%
 private Yylex lexer;
 private int lineno = 0;
+private StatementsNode root;
 
 private int yylex () {
   int yyl_return = -1;
