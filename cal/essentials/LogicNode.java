@@ -7,13 +7,13 @@ public class LogicNode extends AbstractNode {
 
 	public LogicNode(String s) {
 		logicOp = s;
-		if (s == "AND") {
+		if (s.equals("and")) {
 			sreturn = " && ";
 		}
-		if (s == "OR") {
+		if (s.equals("or")) {
 			sreturn = " || ";
 		}
-		if (s == "XOR") {
+		if (s.equals("xor")) {
 			sreturn = " ^ ";
 		}
 		/*
