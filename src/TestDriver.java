@@ -9,21 +9,18 @@ package src;
 
 public class TestDriver {
 	public static void main(String[] args) {
-		Class mainClass = null;
-		Class cellClass = null;
+		Class<?> mainClass = null;
 		Object instance = null;
-		if (args.length != 3) {
+		if (args.length != 2) {
 			System.out
 					.println("You must include the class name as an argument");
 			System.exit(-1);
 		} else {
 			String mainClassName = args[0];
-			String cellClassName = args[1];
-			int runFor = Integer.parseInt(args[2]);
+			int runFor = Integer.parseInt(args[1]);
 
 			try {
 				mainClass = Class.forName(mainClassName);
-				cellClass = Class.forName(cellClassName);
 			} catch (ClassNotFoundException ex) {
 				ex.printStackTrace();
 			}
@@ -36,7 +33,7 @@ public class TestDriver {
 				ex.printStackTrace();
 			}
 
-			GUI gui = new GUI(instance, cellClass, runFor);
+			GUI gui = new GUI(instance, runFor);
 			gui.start();
 		}
 	}

@@ -16,11 +16,12 @@ public class GUI extends Thread {
 	private CAL_GUI gui;
 	private Object obj;
 	private Class<?> oclass; // main class
+	private Class<?> cclass; // cell class
 
 	/**
 	 * Public default constructor.
 	 */
-	public GUI(Object object, Class cell, int runFor) {
+	public GUI(Object object, int runFor) {
 		// Field[] fields = getFields(classname);
 		// Method[] methods = getMethods(classname);
 
@@ -30,6 +31,8 @@ public class GUI extends Thread {
 		try {
 			Field fgx = oclass.getField("gridgx");
 			Field fgy = oclass.getField("gridgy");
+			
+			cclass = oclass.getClasses()[0];
 
 			// constructor = c.getConstructor();
 			// loadedObject = constructor.newInstance();
@@ -38,7 +41,7 @@ public class GUI extends Thread {
 			int gx = fgx.getInt(obj);
 			int gy = fgy.getInt(obj);
 
-			gui = new CAL_GUI(gx, gy, cell);
+			gui = new CAL_GUI(gx, gy, cclass);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
