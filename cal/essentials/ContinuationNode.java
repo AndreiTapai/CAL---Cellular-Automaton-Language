@@ -13,9 +13,9 @@ public class ContinuationNode extends AbstractNode {
 	 * @param s The CAL keyword.
 	 */
 	public ContinuationNode(String s) {
-		if (s == "CONTINUE") {
+		if (s.equals("CONTINUE")) {
 			sreturn = "continue;\n";
-		} else if (s == "BREAK") {
+		} else if (s.equals("BREAK")) {
 			sreturn = "break;\n";
 		}
 	}
