@@ -70,6 +70,7 @@ public class Utils {
 			
 			while(in.hasNextLine()) {
 				line = in.nextLine();
+				level -= numOccurrences('}', line);
 				
 				for(int i = 0; i < level; i ++) {
 					line = "\t" + line;
@@ -77,8 +78,7 @@ public class Utils {
 				
 				code += line + "\n";
 				
-				level += numOccurrences("{", line);
-				level -= numOccurrences("}", line);
+				level += numOccurrences('{', line);
 			}
 			
 			in.close();
@@ -99,22 +99,22 @@ public class Utils {
 	}
 	
 	/**
-	 * Finds the number of occurrences of the given string split in the given
+	 * Finds the number of occurrences of the given character in the given
 	 * string s.
 	 * 
-	 * @param split The string to search for.
+	 * @param c The char to search for.
 	 * @param s The string to search in.
-	 * @return The number of occurrences of split in s.
+	 * @return The number of occurrences of c in s.
 	 */
-	public static int numOccurrences(String split, String s) {
-		String[] splits = s.split(split);
+	public static int numOccurrences(char c, String s) {
+		int occ = 0;
 		
-		double len = 0;
-		
-		for(String str : splits) {
-			len += str.length();
+		for(int i = 0; i < s.length(); i ++) {
+			if(s.charAt(i) == c) {
+				occ ++;
+			}
 		}
 		
-		return (int) ((double) (s.length() - len)/(double) (split.length()));
+		return occ;
 	}
 }
