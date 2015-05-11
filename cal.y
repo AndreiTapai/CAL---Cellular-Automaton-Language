@@ -52,11 +52,11 @@ expressionStatement : variable                                              { $$
                     | variable INCREMENT                                    { $$ = new CalVal(new ExpressionStatementNode($1.sval+$2.sval)); }
                     | variable DECREMENT                                    { $$ = new CalVal(new ExpressionStatementNode($1.sval+$2.sval)); }
                     ;
-expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
-                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
+expression          : expression '+' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, "+", (ExpressionNode)$3.obj)); }
+                    | expression '-' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, "-", (ExpressionNode)$3.obj)); }
+                    | expression '*' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, "*", (ExpressionNode)$3.obj)); }
+                    | expression '/' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, "/", (ExpressionNode)$3.obj)); }
+                    | expression '^' expression                              { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, "^", (ExpressionNode)$3.obj)); }
                     | expression FLOORDIVIDE expression                      { $$ = new CalVal(new ExpressionNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj)); }
                     | variable                                               { $$ = new CalVal(new ExpressionNode($1.sval)); }
                     | variable INCREMENT                                     { $$ = new CalVal(new ExpressionNode($1.sval + $2.sval)); }
@@ -67,60 +67,61 @@ conditional         : expression condition expression                        { $
                     | expression condition expression logic conditional      { $$ = new CalVal(new ConditionalNode((ExpressionNode)$1.obj, $2.sval, (ExpressionNode)$3.obj, (LogicNode)$4.obj, (ConditionalNode)$5.obj)); }
                     | NOT conditional                                        { $$ = new CalVal(new ConditionalNode((ConditionalNode)$2.obj)); }
                     ;
-iteration           : IF '(' conditional ')' block %prec IF                              { $$ = new CalVal(new IterationStatementNode($1.sval, $3.sval, (BlockNode)$5.obj)); }       
-                    | IF '(' conditional ')' block elseif %prec IF                       { $$ = new CalVal(new IterationStatementNode($3.sval, (BlockNode)$5.obj, $6.sval)); }
-                    | IF '(' conditional ')' block elseif ELSE block %prec IF            { $$ = new CalVal(new IterationStatementNode($3.sval, (BlockNode)$5.obj, $6.sval, (BlockNode)$8.obj)); }
-                    | IF '(' conditional ')' block ELSE block %prec IF                   { $$ = new CalVal(new IterationStatementNode($3.sval, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
-                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationStatementNode($3.sval, $5.sval, $7.sval, (BlockNode)$9.obj)); }
-                    | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationStatementNode($3.sval + ":" + $5.sval, (BlockNode)$7.obj)); }
-                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationStatementNode($1.sval, $3.sval, (BlockNode)$5.obj)); }
+iteration           : IF '(' conditional ')' block   %prec IF                                    { $$ = new CalVal(new IterationStatementNode($1.sval, (ConditionalNode)$3.obj, (BlockNode)$5.obj)); }       
+                    | IF '(' conditional ')' block elseif  %prec IF                              { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, $6.sval)); }
+                    | IF '(' conditional ')' block elseif ELSE block %prec IF                    { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, $6.sval, (BlockNode)$8.obj)); }
+                    | IF '(' conditional ')' block ELSE block        %prec IF                    { $$ = new CalVal(new IterationStatementNode((ConditionalNode)$3.obj, (BlockNode)$5.obj, (BlockNode)$7.obj)); }
+                    | FOR '(' forStatement ',' conditional ',' forStatement ')' block    { $$ = new CalVal(new IterationStatementNode($3.sval, (ConditionalNode)$5.obj, $7.sval, (BlockNode)$9.obj)); }
+                    | FOREACH '(' iterable IN iterables ')' block                        { $$ = new CalVal(new IterationStatementNode("Cell "+ $3.sval + " : " + $5.sval, (BlockNode)$7.obj)); }
+                    | WHILE '(' conditional ')' block                                    { $$ = new CalVal(new IterationStatementNode($1.sval, (ConditionalNode)$3.obj, (BlockNode)$5.obj)); }
                     ;
 gridDefinition      : GRID VARIABLE IS GRIDSIZE                             { $$ = new CalVal(new GridDefinitionNode($2.sval, $4.sval)); }
                     ;
 cellDefinition      : CELLS HAVE type VARIABLE                              { $$ = new CalVal(new CellDefinitionNode($3.sval, $4.sval)); }
                     | CELLS HAVE type LIFE                                  { $$ = new CalVal(new CellDefinitionNode($3.sval, $4.sval)); }
                     ;
-variableDeclaration : type VARIABLE                                         { $$ = new CalVal(new VariableDeclarationNode($1.sval+$2.sval)); }
-                    | type '[' INTEGERVAL ']' VARIABLE                      { $$ = new CalVal(new VariableDeclarationNode($1.sval+$2+$3.sval+$4+$5.sval)); }
+variableDeclaration : type VARIABLE                                         { $$ = new CalVal(new VariableDeclarationNode($1.sval+" "+$2.sval+";\n")); }
+                    | type '[' INTEGERVAL ']' VARIABLE                      { $$ = new CalVal(new VariableDeclarationNode($1.sval+"["+$3.ival+"] "+$5.sval+";\n")); }
                     ;                   
-variableDefinition  : type VARIABLE '=' expression                          { $$ = new CalVal(new VariableDefinitionNode($1.sval+$2.sval,$3.sval, (ExpressionNode)$4.obj)); }                  
-                    | variable '=' expression                               { $$ = new CalVal(new VariableDefinitionNode($1.sval,$2.sval,(ExpressionNode)$3.obj)); }
-                    | variable '=' functionCall                             { $$ = new CalVal(new VariableDefinitionNode($1.sval,$2.sval,(FunctionCallNode)$3.obj)); }
+variableDefinition  : type VARIABLE '=' expression                          { $$ = new CalVal(new VariableDefinitionNode($1.sval+" "+$2.sval, "=" , (ExpressionNode)$4.obj)); }                  
+                    | variable '=' expression                               { $$ = new CalVal(new VariableDefinitionNode($1.sval,"=",(ExpressionNode)$3.obj)); }
+                    | variable '=' functionCall                             { $$ = new CalVal(new VariableDefinitionNode($1.sval,"=",(FunctionCallNode)$3.obj)); }
                     | variable assign expression                            { $$ = new CalVal(new VariableDefinitionNode($1.sval,$2.sval,(ExpressionNode)$3.obj)); }
                     ;
 functionDeclaration : type VARIABLE '(' parameters ')' functionBlock        { $$ = new CalVal(new FunctionDeclarationNode($1.sval, $2.sval, (ParametersNode)$4.obj, (FunctionBlockNode)$6.obj)); }
                     ;
 functionCall        : VARIABLE '(' actuals ')'                              { $$ = new CalVal(new FunctionCallNode($1.sval, $3.sval)); }
+                    | VARIABLE'(' ')'                                       { $$ = new CalVal(new FunctionCallNode($1.sval, "")); }
                     | RANDOM '(' randomActuals')'                           { $$ = new CalVal(new FunctionCallNode($1.sval, $3.sval)); }
                     ;
-forStatement        : variableStatement                                     { $$ = new CalVal($1.sval); }
+forStatement        : variableStatement                                     { $$ = new CalVal(((VariableStatementNode)$1.obj).toJavaExpression()); }
                     | variable INCREMENT                                    { $$ = new CalVal($1.sval+$2.sval); }
                     | variable DECREMENT                                    { $$ = new CalVal($1.sval+$2.sval); }
                     ;
-elseif              : ELSEIF '(' conditional ')' block %prec IF             { $$ = new CalVal($1.sval+$2.sval+$3.sval+$4.sval+((BlockNode)$5.obj).toJava()); }
-                    | ELSEIF '(' conditional ')' block elseif %prec IF      { $$ = new CalVal($1.sval+$2.sval+$3.sval+$4.sval+((BlockNode)$5.obj).toJava()+$6.sval); }
+elseif              : ELSEIF '(' conditional ')' block %prec IF             { $$ = new CalVal($1.sval.replace("-", " ")+"("+((ConditionalNode)$3.obj).toJava()+")"+((BlockNode)$5.obj).toJava()); }
+                    | ELSEIF '(' conditional ')' block elseif  %prec IF             { $$ = new CalVal($1.sval.replace("-", " ")+"("+((ConditionalNode)$3.obj).toJava()+")"+((BlockNode)$5.obj).toJava()+$6.sval); }
                     ;
 variable            : VARIABLE                                              { $$ = new CalVal($1.sval); }
                     | CELL                                                  { $$ = new CalVal($1.sval); }
-                    | CELL '.' LIFE                                         { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | CELL'.' VARIABLE                                      { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | CELLS '.' LIFE                                        { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | CELLS '.' VARIABLE                                    { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | NEIGHBOR '.' LIFE                                     { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | NEIGHBOR '.' VARIABLE                                 { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | NEIGHBORS '.' LIFE                                    { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | NEIGHBORS '.' VARIABLE                                { $$ = new CalVal($1.sval + $2 + $3.sval); }
-                    | CELL '.' VARIABLE '[' arrayIndex ']'                  { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
-                    | NEIGHBOR '.' VARIABLE '[' arrayIndex ']'              { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
-                    | CELLS '.' VARIABLE '[' arrayIndex ']'                 { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
-                    | NEIGHBORS '.' VARIABLE '[' arrayIndex ']'             { $$ = new CalVal($1.sval + $2 + $3.sval + $4 + $5.sval + $6); }
-                    | VARIABLE '[' INTEGERVAL ']'                           { $$ = new CalVal($1.sval + $2 + $3 + $4); }
+                    | CELL '.' LIFE                                         { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | CELL'.' VARIABLE                                      { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | CELLS '.' LIFE                                        { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | CELLS '.' VARIABLE                                    { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | NEIGHBOR '.' LIFE                                     { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | NEIGHBOR '.' VARIABLE                                 { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | NEIGHBORS '.' LIFE                                    { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | NEIGHBORS '.' VARIABLE                                { $$ = new CalVal($1.sval + "." + $3.sval); }
+                    | CELL '.' VARIABLE '[' arrayIndex ']'                  { $$ = new CalVal($1.sval + "." + $3.sval + "[" + $5.sval + "]"); }
+                    | NEIGHBOR '.' VARIABLE '[' arrayIndex ']'              { $$ = new CalVal($1.sval + "." + $3.sval + "[" + $5.sval + "]"); }
+                    | CELLS '.' VARIABLE '[' arrayIndex ']'                 { $$ = new CalVal($1.sval + "." + $3.sval + "[" + $5.sval + "]"); }
+                    | NEIGHBORS '.' VARIABLE '[' arrayIndex ']'             { $$ = new CalVal($1.sval + "." + $3.sval + "[" + $5.sval + "]"); }
+                    | VARIABLE '[' arrayIndex ']'                           { $$ = new CalVal($1.sval + "[" + $3.sval + "]"); }
                     ;
 iterable            : CELL                                                  { $$ = new CalVal($1.sval); }
                     | NEIGHBOR                                              { $$ = new CalVal($1.sval); }
                     ;
 iterables           : CELLS                                                 { $$ = new CalVal($1.sval); }
-                    | NEIGHBORS                                             { $$ = new CalVal($1.sval); }
+                    | NEIGHBORS                                             { $$ = new CalVal("cell." + $1.sval); }
                     ;
 type                : INTEGER                                               { $$ = new CalVal($1.sval); }
                     | FLOAT                                                 { $$ = new CalVal($1.sval); }
@@ -130,8 +131,8 @@ type                : INTEGER                                               { $$
                     | VOID                                                  { $$ = new CalVal($1.sval); }
                     | NEIGHBOR                                              { $$ = new CalVal($1.sval); }
                     ;
-value               : INTEGERVAL                                            { $$ = new CalVal($1.sval); }
-                    | FLOATVAL                                              { $$ = new CalVal($1.sval); }
+value               : INTEGERVAL                                            { $$ = new CalVal(String.valueOf($1.ival)); }
+                    | FLOATVAL                                              { $$ = new CalVal(String.valueOf($1.dval)); }
                     | TRUE                                                  { $$ = new CalVal($1.sval); }
                     | FALSE                                                 { $$ = new CalVal($1.sval); }
                     | CHARACTERVAL                                          { $$ = new CalVal($1.sval); }
@@ -172,10 +173,10 @@ return              : RETURN value                  { $$ = new CalVal(new Return
 parameters          :                               { $$ = new CalVal(new ParametersNode()); }
                     | type VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
                     | type VARIABLE ',' parameters  { $$ = new CalVal(new ParametersNode($1.sval, $2.sval, ((ParametersNode)$4.obj).params)); }
-                    | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval, $2.sval)); }
+                    | CELL VARIABLE                 { $$ = new CalVal(new ParametersNode($1.sval.replace("c", "C"), "cell")); }
                     ;
 actuals             : variable                      { $$ = (CalVal)$1; }
-                    | variable ',' actuals          { $$ = new CalVal($1.sval+$2.sval+$3.sval); }
+                    | variable ',' actuals          { $$ = new CalVal($1.sval+","+$3.sval); }
                     ;
 randomActuals       : 
                     | value                                                 { $$ = (CalVal)$1; }
@@ -183,13 +184,13 @@ randomActuals       :
                     | value '~' value                                       { $$ = new CalVal($1.sval +'~'+$3.sval); }
                     | value '~' value ',' randomActuals                     { $$ = new CalVal($1.sval +'~'+$3.sval+','+$5.sval); }
                     ;
-arrayIndex          : INTEGERVAL                                            { $$ = new CalVal(String.valueOf($1)); }
-                    | VARIABLE                                              { $$ = new CalVal($1); }
+arrayIndex          : INTEGERVAL                                            { $$ = new CalVal(String.valueOf($1.ival)); }
+                    | VARIABLE                                              { $$ = new CalVal($1.sval); }
                     ;
 %%
 private Yylex lexer;
 private int lineno = 0;
-private StatementsNode root;
+private static StatementsNode root;
 
 private int yylex () {
   int yyl_return = -1;
@@ -225,4 +226,81 @@ public static void main(String args[]) throws IOException {
   }
 
   yyparser.yyparse();
+  try{
+     String className = args[0].split("\\.")[0]+"CAL";
+     String firstChar = String.valueOf(className.charAt(0)).toUpperCase();
+     String imports = "import java.util.ArrayList;\n"+
+                       "import java.util.Random;\n";
+     className = firstChar + className.substring(1, className.length());
+
+     String boilerClass = 
+     "public class Cell {\n" +
+     "/* The below are standard attributes of all Cells: x, y, life, and neighbors */\n" +
+     "public int x;\n" +
+     "public int y;\n" +
+     "public boolean life;\n" +
+     "public ArrayList<Cell> neighbors = new ArrayList<Cell>();\n" +
+
+     "public Cell(int x, int y) {\n" +
+          "this.x = x;\n" +
+          "this.y = y;\n" +
+          "/* Random function inserted according to what is needed */\n" +
+          "Random r = new Random();\n" +
+          "life = r.nextBoolean();\n" +
+     "}\n" +
+
+     "// standard function in all Cell classes\n" +
+     "public void addNeighbors(Cell c) {\n" +
+          "this.neighbors.add(c);\n" +
+     "}\n" +
+
+     "}";
+
+     String boilerMain = 
+     "public ArrayList<Cell> cells = new ArrayList<Cell>();\n"+
+
+     "public "+ className+"() {\n"+
+          "for (int i = 0; i < gridgx; i++)\n"+
+               "for (int j = 0; j < gridgy; j++) {\n"+
+                    "cells.add(new Cell(i, j));\n"+
+               "}\n"+
+          "for (Cell cell : cells) {\n"+
+              "if (cell.x > 0)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x - 1, cell.y));\n"+
+               "if (cell.y > 0)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x, cell.y - 1));\n"+
+               "if (cell.x < gridgx - 1)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x + 1, cell.y));\n"+
+               "if (cell.y < gridgy - 1)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x, cell.y + 1));\n"+
+               "if (cell.x > 0 && cell.y > 0)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x - 1, cell.y - 1));\n"+
+               "if (cell.x < gridgx - 1 && cell.y > 0)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x + 1, cell.y - 1));\n"+
+               "if (cell.x > 0 && cell.y < gridgy - 1)\n"+                            
+                   " cell.addNeighbors(getNeighbors(cell.x - 1, cell.y + 1));\n"+                       
+               "if (cell.x < gridgx - 1 && cell.y < gridgy - 1)\n"+
+                    "cell.addNeighbors(getNeighbors(cell.x + 1, cell.y + 1));\n"+
+          "}\n"+
+     "}\n"+
+     "public Cell getNeighbors(int x, int y) {\n"+
+          "for (int i = 0; i < cells.size(); i++)\n"+
+               "if (cells.get(i).x == x && cells.get(i).y == y) {\n"+                                
+                                "System.out.println(\"Neighbor: \" + cells.get(i).x + \", \" + cells.get(i).y);\n"+
+                    "return (Cell) cells.get(i);\n"+
+               "}\n"+
+          "return null; // Shouldn't be reachable\n"+
+     "}\n";
+    PrintWriter pw = new PrintWriter(className+".java");
+    pw.println(imports);
+    pw.println("public class " + className +" {");
+    pw.print(boilerMain);
+    pw.print(root.toJava());
+    pw.print(boilerClass);
+    pw.println("}");
+    pw.close();
+    }
+    catch(IOException e){
+    System.out.println(e);
+    }
 }

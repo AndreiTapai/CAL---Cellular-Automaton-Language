@@ -23,7 +23,21 @@ public class ConditionalNode extends AbstractNode {
 		exp1 = e1;
 		cond = c;
 		exp2 = e2;
-		sreturn = exp1.toJava() + cond + exp2.toJava();
+
+		if(cond.equals("less-than"))
+			cond = "<";
+		else if(cond.equals("less-equals"))
+			cond = "<=";
+		else if(cond.equals("greater-than"))
+			cond = ">";
+		else if(cond.equals("greater-equals"))
+			cond = ">=";
+		else if(cond.equals("equals"))
+			cond = "==";
+		else
+			cond = "!=";
+
+		sreturn = exp1.toJava() + " " + cond + " " + exp2.toJava();
 	}
 
 	/**
@@ -41,18 +55,32 @@ public class ConditionalNode extends AbstractNode {
 
 		exp1 = e1;
 		cond = c1;
+
+		if(cond.equals("less-than"))
+			cond = "<";
+		else if(cond.equals("less-equals"))
+			cond = "<=";
+		else if(cond.equals("greater-than"))
+			cond = ">";
+		else if(cond.equals("greater-equals"))
+			cond = ">=";
+		else if(cond.equals("equals"))
+			cond = "==";
+		else
+			cond = "!=";
+
 		exp2 = e2;
 		logic = l;
 		conditional = c2;
-		if (logic.toString() == "NAND") {
-			sreturn = "!(" + exp1.toJava() + cond + exp2.toJava()
+		if (logic.toString().equals("nand")) {
+			sreturn = "!(" + exp1.toJava() + " " + cond + " " + exp2.toJava()
 					+ " && " + conditional.toJava() + ")";
-		} else if (logic.toString() == "NOR") {
-			sreturn = "!(" + exp1.toJava() + cond + exp2.toJava()
+		} else if (logic.toString().equals("nor")) {
+			sreturn = "!(" + exp1.toJava() + " " + cond + " " + exp2.toJava()
 					+ " || " + conditional.toJava() + ")";
 		} else {
-			sreturn = exp1.toJava() + cond + exp2.toJava()
-					+ logic.toJava() + conditional.toJava();
+			sreturn = exp1.toJava() + " " + cond + " " + exp2.toJava()
+					+ " " + logic.toString() + " " + conditional.toJava();
 		}
 	}
 	

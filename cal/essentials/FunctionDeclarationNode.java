@@ -18,7 +18,7 @@ public class FunctionDeclarationNode extends AbstractNode {
 
 	@Override
 	public String toJava() {
-		return "public static " + type + " " + name + '(' + params.toJava()
+		return "public " + type + " " + name + '(' + params.toJava()
 				+ ')' + block.toJava();
 	}
 

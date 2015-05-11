@@ -11,7 +11,7 @@ public class VariableDefinitionNode extends AbstractNode {
 		this.op = op;
 		enode = node;
 		fnode = null;
-		sreturn = name + op + node.toJava();
+		sreturn = name + " " + op + " " + node.toJava() + ";\n";
 	}
 
 	public VariableDefinitionNode(String name, String op, FunctionCallNode node) {
@@ -19,7 +19,7 @@ public class VariableDefinitionNode extends AbstractNode {
 		this.op = op;
 		enode = null;
 		fnode = node;
-		sreturn = name + op + node.toJava();
+		sreturn = name + op + node.toJava() + ";\n";
 	}
 
 	@Override

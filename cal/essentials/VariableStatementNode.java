@@ -20,5 +20,8 @@ public class VariableStatementNode extends AbstractNode {
 	public String toJava() {
 		return sreturn;
 	}
+	public String toJavaExpression(){
+		return sreturn.replace("\n", "").replace(";", "");
+	}
 
 }
