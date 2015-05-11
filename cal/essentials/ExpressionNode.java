@@ -22,9 +22,9 @@ public class ExpressionNode extends AbstractNode {
 	public ExpressionNode(ExpressionNode e1, String s, ExpressionNode e2) {
 		exp1 = e1;
 		exp2 = e2;
-		if (s == "^") {
+		if (s.equals("^")) {
 			sreturn = "Math.pow(" + exp1.toJava() + ", " + exp2.toJava() + ")";
-		} else if (s == "FLOORDIVIDE") {
+		} else if (s.equals("FLOORDIVIDE")) {
 			sreturn = "Math.floor(" + exp1.toJava() + ", " + exp2.toJava()
 					+ ")";
 		} else {
