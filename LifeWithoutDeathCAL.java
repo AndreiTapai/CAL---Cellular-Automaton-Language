@@ -50,7 +50,7 @@ public void cal_it(){
 int liveneighbors = 0;
 for(Cell cell : cells){
 liveneighbors=num_live_neighbors(cell);
-if(cell.life == false and liveneighbors == 3){
+if(cell.life == false && liveneighbors == 3){
 cell.life = true;
 }
 else{
@@ -58,7 +58,7 @@ else{
 }
 }
 public class Cell {
-/* The below are standard attributes of all Cells: x, y, life, and neighbors */
+/* The below are standard attributes of all Cells: x, y, life,   and  and    and  and   neighbors */
 public int x;
 public int y;
 public boolean life;
