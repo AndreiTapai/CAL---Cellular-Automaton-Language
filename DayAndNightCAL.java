@@ -1,3 +1,5 @@
+/* IMPORTANT - HAND TRANSLATED 'OR' BOOLEAN OPERATOR */
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -50,14 +52,14 @@ public void cal_it(){
 int liveneighbors = 0;
 for(Cell cell : cells){
 liveneighbors=num_live_neighbors(cell);
-deadneighbors = 8 - num_live_neighbors;
+int deadneighbors = 8 - liveneighbors;
 if(cell.life == true){
-if(deadneighbors == 1 or deadneighbors == 2 or deadneighbors == 5){
+if(deadneighbors == 1 || deadneighbors == 2 || deadneighbors == 5){
 cell.life = false;
 }
 }
 else if(cell.life == false){
-if(liveneighbors == 3 or liveneighbors == 6 or liveneighbors == 7 or liveneighbors == 8){
+if(liveneighbors == 3 || liveneighbors == 6 || liveneighbors == 7 || liveneighbors == 8){
 cell.life = true;
 }
 }
