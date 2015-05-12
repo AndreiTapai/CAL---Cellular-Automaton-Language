@@ -1,8 +1,9 @@
 >This program is an implementation of Conway's Game of Life. What you are
 currently reading is a properly formatted multi-line comment in CAL.
-This file is the same as test2.cal.<
+This file is the same as test2.cal except for the gridsize, which has
+been made smaller for runtime purposes.<
 
-grid g is 100x100
+grid g is 50x50
 cells have boolean life
 
 int num_live_neighbors(cell c)
