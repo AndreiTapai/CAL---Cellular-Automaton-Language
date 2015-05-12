@@ -50,7 +50,7 @@ public void cal_it(){
 int liveneighbors = 0;
 for(Cell cell : cells){
 liveneighbors=num_live_neighbors(cell);
-if(cell.life == false and liveneighbors == 2){
+if(cell.life == false && liveneighbors == 2){
 cell.life = true;
 }
 else{
