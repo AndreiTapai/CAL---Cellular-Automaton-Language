@@ -51,12 +51,12 @@ int liveneighbors = 0;
 for(Cell cell : cells){
 liveneighbors=num_live_neighbors(cell);
 if(cell.life == false){
-if(liveneighbors == 3 or liveneighbors == 6){
+if(liveneighbors == 3 || liveneighbors == 6){
 cell.life = true;
 }
 }
 else if(cell.life == true){
-if(liveneighbors != 2 and liveneighbors != 3){
+if(liveneighbors != 2 && liveneighbors != 3){
 cell.life = false;
 }
 }
