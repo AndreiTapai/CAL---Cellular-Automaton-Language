@@ -1,0 +1,38 @@
+>Seeds CAL program.
+Dead cells with 2 live neighbors come alive;
+all other cells die.
+Written by Geoffrey Loss.<
+
+grid g is 100x100
+cells have boolean life
+
+int num_live_neighbors(cell c)
+|
+	int live = 0
+	for-each (neighbor in neighbors)
+	|
+		if (neighbor.life equals true)
+		|
+			live++
+		|
+	|
+	return live
+|
+
+void cal_it()
+|
+	int liveneighbors = 0
+	for-each (cell in cells)
+	|
+		liveneighbors = num_live_neighbors(cell)
+        if (cell.life equals false and liveneighbors equals 2)
+        |
+            cell.life = true
+        |
+        else
+        |
+            cell.life = false
+        |
+
+	|
+|
