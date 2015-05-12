@@ -80,7 +80,7 @@ public class ConditionalNode extends AbstractNode {
 					+ " || " + conditional.toJava() + ")";
 		} else {
 			sreturn = exp1.toJava() + " " + cond + " " + exp2.toJava()
-					+ " " + logic.toString() + " " + conditional.toJava();
+					+ " " + logic.toJava() + " " + conditional.toJava();
 		}
 	}
 	
