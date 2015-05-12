@@ -1,0 +1,35 @@
+grid g is 100x100
+boolean[8] neighbor_life
+cells have boolean life
+cells.life = random()
+
+boolean next_generation(cell c)
+|
+	int i = 0
+	boolean temp
+	for-each(neighbor in neighbors)
+	|
+		neighbor_life[i] = neighbor.life
+		i++
+	|
+	for(int j = 0, j less-than i, j++)
+	|
+		if (j equals 0)
+		|
+			temp = neighbor_life[j]
+		|
+		else
+		|
+			
+		|
+	|
+	return temp
+|
+
+void cal_it()
+|
+	for-each (cell in cells)
+	|
+		cell.life = next_generation(cell)
+	|
+|

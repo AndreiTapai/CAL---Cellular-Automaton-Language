@@ -299,6 +299,7 @@ public static void main(String args[]) throws IOException {
     pw.print(boilerClass);
     pw.println("}");
     pw.close();
+    Utils.format(className+".java");
     }
     catch(IOException e){
     System.out.println(e);

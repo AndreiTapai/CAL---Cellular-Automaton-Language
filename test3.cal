@@ -1,0 +1,23 @@
+grid g is 100x100
+cells have boolean life
+cells have int number
+cells.life = random()
+cells.number = random(1~9999)
+
+void cal_it()
+|
+	for(int i = 0, i less-than 10000, i++)
+	|
+		for-each (cell in cells)
+		|
+			if (cell.number equals i)
+			|
+				cell.life = true
+			|
+			else-if (cell.number greater-than i)
+			|
+				cell.life = false
+			|
+		|
+	|
+|

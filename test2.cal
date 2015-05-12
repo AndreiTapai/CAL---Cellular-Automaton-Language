@@ -1,0 +1,42 @@
+>This program is an implementation of Conway's Game of Life. What you are
+currently reading is a properly formatted multi-line comment in CAL.<
+
+grid g is 100x100
+cells have boolean life
+
+int num_live_neighbors(cell c)
+|
+	int live = 0
+	for-each (neighbor in neighbors)
+	|
+		if (neighbor.life equals true)
+		|
+			live++
+		|
+	|
+	return live
+|
+
+void cal_it()
+|
+	int liveneighbors = 0
+	for-each (cell in cells)
+	|
+		liveneighbors = num_live_neighbors(cell)
+		if (cell.life equals true and liveneighbors less-than 2)
+		|
+			cell.life = false
+		|
+		else-if (cell.life equals true and liveneighbors greater-than 3)
+		|
+			cell.life = false
+		|
+		else-if (cell.life equals false and liveneighbors equals 3)
+		|
+			cell.life = true
+		|
+		else
+		|
+		|
+	|
+|

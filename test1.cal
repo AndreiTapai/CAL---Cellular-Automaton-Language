@@ -1,0 +1,7 @@
+grid g is 3x3
+cells have boolean life
+cells.life = true
+
+void calit()
+|
+|

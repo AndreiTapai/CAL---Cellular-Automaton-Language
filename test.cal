@@ -1,0 +1,20 @@
+grid g is 30x30
+
+int[8] x
+cells have boolean x
+
+cell.x[7] = 0
+for (i = 0, i less-than 8, i++)
+|
+	if (i not-equals 7 and i equals 5 or i less-than 6)
+	|
+		x[i] = i
+	|
+	for-each (cell in cells)
+	|
+		cell.x[7] += cell.x[i]    >I snuck a comment in this example too!<
+	|
+|
+
+
+x = random(7~9, 8~11)
