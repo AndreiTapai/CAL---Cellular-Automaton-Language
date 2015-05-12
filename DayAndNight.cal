@@ -25,7 +25,7 @@ void cal_it()
 	for-each (cell in cells)
 	|
 		liveneighbors = num_live_neighbors(cell)
-        deadneighbors = 8 - num_live_neighbors
+        int deadneighbors = 8 - num_live_neighbors
         if (cell.life equals true)
         |
             if (deadneighbors equals 1 or deadneighbors equals 2 or deadneighbors equals 5)
