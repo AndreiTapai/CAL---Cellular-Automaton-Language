@@ -24,7 +24,7 @@ void cal_it()
 	int liveneighbors = 0
 	for-each (cell in cells)
 	|
-		liveneighbors = num_live_neighbors(cell
+		liveneighbors = num_live_neighbors(cell)
         if (cell.life equals false)
         |
             if (liveneighbors equals 3 or liveneighbors equals 6)
