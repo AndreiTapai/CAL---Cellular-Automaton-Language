@@ -3,7 +3,7 @@ Dead cells with 2 live neighbors come alive;
 all other cells die.
 Written by Geoffrey Loss.<
 
-grid g is 100x100
+grid g is 50x50
 cells have boolean life
 
 int num_live_neighbors(cell c)
