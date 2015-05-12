@@ -1,0 +1,44 @@
+>Day And Night CAL program.
+Live cells with 3, 4, 6, 7, or 8 neighbors stay alive;
+dead cells with 3, 6, 7, or 8 neighbors come alive.
+Written by Geoffrey Loss.<
+
+grid g is 50x50
+cells have boolean life
+
+int num_live_neighbors(cell c)
+|
+	int live = 0
+	for-each (neighbor in neighbors)
+	|
+		if (neighbor.life equals true)
+		|
+			live++
+		|
+	|
+	return live
+|
+
+void cal_it()
+|
+	int liveneighbors = 0
+	for-each (cell in cells)
+	|
+		liveneighbors = num_live_neighbors(cell)
+        deadneighbors = 8 - num_live_neighbors
+        if (cell.life equals true)
+        |
+            if (deadneighbors equals 1 or deadneighbors equals 2 or deadneighbors equals 5)
+            |
+                cell.life = false
+            |
+        |
+        else-if (cell.life equals false)
+        |
+            if (liveneighbors equals 3 or liveneighbors equals 6 or liveneighbors equals 7 or liveneighbors equals 8)
+            |
+                cell.life = true
+            |
+        |
+	|
+|
