@@ -35,8 +35,8 @@ return (Cell) cells.get(i);
 }
 return null; // Shouldn't be reachable
 }
-public int gridgx = 100;
-public int gridgy = 100;
+public int gridgx = 50;
+public int gridgy = 50;
 public boolean life;
 public int num_live_neighbors(Cell cell){
 int live = 0;
